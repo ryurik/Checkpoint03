@@ -43,9 +43,11 @@
   <ItemGroup>
     <Compile Include="Classes\CallingEventArgs.cs" />
     <Compile Include="Classes\ATS.cs" />
+    <Compile Include="Classes\Serializer.cs" />
     <Compile Include="Enums\ConnectionResult.cs" />
     <Compile Include="Enums\PortState.cs" />
     <Compile Include="Classes\Port.cs" />
+    <Compile Include="Classes\PortSet.cs" />
     <Compile Include="Structures\PhoneNumber.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -3,21 +3,21 @@
   <Class Name="CP3Task1.ATS" Collapsed="true">
     <Position X="5.25" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAQAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Classes\ATS.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CP3Task1.Port" Collapsed="true">
     <Position X="5.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAABAAAAA=</HashCode>
       <FileName>Classes\Port.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CP3Task1.Terminal" Collapsed="true">
     <Position X="7" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <HashCode>AEAAAAAAAAABAAIAAEACAAAACAGAAAAAAQAEAgABAAA=</HashCode>
       <FileName>Classes\Terminal.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -27,6 +27,14 @@
       <HashCode>AAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAEAAAAA=</HashCode>
       <FileName>Classes\CallingEventArgs.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="CP3Task1.PortSet">
+    <Position X="8.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACIAAAAAAAAAABgQAAAABAQAAAAAAAAAAAAAAABQIAA=</HashCode>
+      <FileName>Classes\PortSet.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Struct Name="CP3Task1.PhoneNumber" Collapsed="true">
     <Position X="5.25" Y="3" Width="1.5" />
