@@ -65,9 +65,9 @@ namespace CP3Task1
         {
             if (Ats != null)
             {
-                Ats.
+               // Ats.
             }
-            Port = 
+           // Port = 
         }
         public void SwitchOff()
         {

@@ -22,18 +22,23 @@ namespace CP3Task1
                 PhoneNumber = phoneNumber,
                 PortState = portState,
             };
-            string fileName = Path.Combine(Program.AppPath, Program.PortData[0], Path.ChangeExtension(phoneNumber.Number.ToString(), Program.PortData[1]));
+            string fileName = GenerateFileName(phoneNumber.Number);
             Serializer.SaveToXml(fileName, port);
 
         }
-        public static Port LoadFromFile(PhoneNumber phoneNumber)
+        public static Port LoadFromFile(int phoneNumber)
         {
-            string fileName = Path.Combine(Program.AppPath, Program.PortData[0], Path.ChangeExtension(phoneNumber.Number.ToString(), Program.PortData[1]));
+            string fileName = GenerateFileName(phoneNumber);
             if (!File.Exists(fileName))
             {
                 return null;
             }
             return Serializer.LoadFromXml<Port>(fileName);
+        }
+
+        public static string GenerateFileName(int portNumber)
+        {
+            return Path.Combine(Program.AppPath, Program.PortData[0], Path.ChangeExtension(String.Format("Name{0}{1}", new String('0', 6 - portNumber.ToString().Length), portNumber), Program.PortData[1]));
         }
     }
 }

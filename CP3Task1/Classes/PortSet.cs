@@ -42,7 +42,7 @@ namespace CP3Task1
 
         public bool Remove(Port item)
         {
-            _ports.Remove(item);
+            return _ports.Remove(item);
         }
 
         public IEnumerator<Port> GetEnumerator()
