@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CP3Task1.ATS" Collapsed="true">
+    <Position X="5.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\ATS.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CP3Task1.Port" Collapsed="true">
+    <Position X="5.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\Port.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CP3Task1.Terminal" Collapsed="true">
+    <Position X="7" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Classes\Terminal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CP3Task1.CallingEventArgs" Collapsed="true">
+    <Position X="7" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Classes\CallingEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="CP3Task1.PhoneNumber" Collapsed="true">
+    <Position X="5.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Structures\PhoneNumber.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="CP3Task1.TerminalState" Collapsed="true">
+    <Position X="7" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Enums\TerminalState.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CP3Task1.ConnectionResult" Collapsed="true">
+    <Position X="5.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAgAAAAIAAAAAAIAAAAAAAAAAAAAABAACAAAA=</HashCode>
+      <FileName>Enums\ConnectionResult.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
