@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,15 +12,35 @@ namespace CP3Task1
     public class ATS
     {
         private PortSet _ports = new PortSet();
+        
+        public PortSet Ports
+        {
+            get { return _ports; }
+            set { _ports = value; }
+        }
 
         public ATS()
         {
             LoadData();
         }
 
+        public void ActivatePortsFromContracts()
+        {
+            Random r = new Random();
+            for (int i = 0; i < Ports.Count/2; i ++)
+            {
+                var tmp = _ports.Where(x => x.PortState == PortState.UnPlugget).ToArray();
+                tmp[r.Next(1, tmp.Length)].PortState = PortState.Plugget;
+            }
+        }
+
         private void LoadData()
         {
             var dir = new DirectoryInfo(Path.GetDirectoryName(Port.GenerateFileName(0)));
+            if (!Directory.Exists(dir.FullName))
+            {
+                return;
+            }
 
             foreach (FileInfo f in dir.GetFiles(searchPattern: String.Format("*.{0}", Program.PortData[1])))
             {
@@ -30,13 +51,13 @@ namespace CP3Task1
 
         public void CreateFirstPorts(int count = 50)
         {
-            for (int i = 0; i < count; i++)
+            for (int i = 1; i <= count; i++)
             {
                 Port port = new Port()
                 {
                     PhoneNumber = new PhoneNumber()
                     {
-                        Name = String.Format("Name{0}{1}", new String('0', 6 - i.ToString().Length), i),
+                        Name = String.Format("{0}{1}", new String('0', 6 - i.ToString().Length), i),
                         Number = i
                     },
                     PortState = PortState.UnPlugget

@@ -38,7 +38,7 @@ namespace CP3Task1
 
         public static string GenerateFileName(int portNumber)
         {
-            return Path.Combine(Program.AppPath, Program.PortData[0], Path.ChangeExtension(String.Format("Name{0}{1}", new String('0', 6 - portNumber.ToString().Length), portNumber), Program.PortData[1]));
+            return Path.Combine(Program.AppPath, Program.PortData[0], Path.ChangeExtension(String.Format("{0}{1}", new String('0', 6 - portNumber.ToString().Length), portNumber), Program.PortData[1]));
         }
     }
 }
