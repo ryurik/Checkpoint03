@@ -12,6 +12,7 @@ namespace CP3Task1
     public class ATS
     {
         private PortSet _ports = new PortSet();
+        private TerminalSet _terminals = new TerminalSet();
         
         public PortSet Ports
         {
@@ -19,10 +20,18 @@ namespace CP3Task1
             set { _ports = value; }
         }
 
+        public TerminalSet Terminals
+        {
+            get { return _terminals; }
+            set { _terminals = value; }
+        }
+
         public ATS()
         {
-            LoadData();
+            LoadData(); // LoadMainData - Starting ATS
         }
+
+        #region WorkWithPorts
 
         public void ActivatePortsFromContracts()
         {
@@ -31,21 +40,6 @@ namespace CP3Task1
             {
                 var tmp = _ports.Where(x => x.PortState == PortState.UnPlugget).ToArray();
                 tmp[r.Next(1, tmp.Length)].PortState = PortState.Plugget;
-            }
-        }
-
-        private void LoadData()
-        {
-            var dir = new DirectoryInfo(Path.GetDirectoryName(Port.GenerateFileName(0)));
-            if (!Directory.Exists(dir.FullName))
-            {
-                return;
-            }
-
-            foreach (FileInfo f in dir.GetFiles(searchPattern: String.Format("*.{0}", Program.PortData[1])))
-            {
-                Port port = Port.LoadFromFile(Int32.Parse(Path.GetFileNameWithoutExtension(f.Name)));
-                _ports.Add(port); // сохраняем все конфеты в списке, чтобы потом было удобнее работать
             }
         }
 
@@ -65,5 +59,51 @@ namespace CP3Task1
                 Serializer.SaveToXml(Path.Combine(Program.AppPath, Program.PortData[0], Path.ChangeExtension(port.PhoneNumber.Name, Program.PortData[1])), port);
             }
         }
+
+        #endregion
+
+        #region WorkWithTerminals
+
+        public void ActivateTerminalsFromContracts()
+        {
+            Random r = new Random();
+            for (int i = 0; i < Ports.Count / 2; i++)
+            {
+                var tmp = _ports.Where(x => x.PortState == PortState.UnPlugget).ToArray();
+                tmp[r.Next(1, tmp.Length)].PortState = PortState.Plugget;
+            }
+        }
+
+        public void CreateFirstTerminals(int count = 50)
+        {
+            for (int i = 1; i <= count; i++)
+            {
+                Terminal terminal = new Terminal()
+                {
+                    Ats = this,
+                    Number = i,
+                    Port = null,
+                    TerminalState = TerminalState.Off
+                };
+                Serializer.SaveToXml(Path.Combine(Program.AppPath, Program.TerminaData[0], Path.ChangeExtension(terminal.Number.ToString(), Program.PortData[1])), port);
+            }
+        }
+
+        #endregion
+
+        
+        private void LoadData()
+        {
+            var dir = new DirectoryInfo(Path.GetDirectoryName(Port.GenerateFileName(0)));
+            if (!Directory.Exists(dir.FullName))
+                return;
+            // loading ports
+            foreach (Port port in dir.GetFiles(searchPattern: String.Format("*.{0}", Program.PortData[1])).Select(f => Port.LoadFromFile(Int32.Parse(Path.GetFileNameWithoutExtension(f.Name)))))
+            {
+                _ports.Add(port); 
+            }
+        }
+
+
     }
 }

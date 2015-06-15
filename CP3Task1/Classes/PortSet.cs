@@ -27,7 +27,7 @@ namespace CP3Task1
 
         public void CopyTo(Port[] array, int arrayIndex)
         {
-            array.CopyTo(array, arrayIndex);
+            _ports.CopyTo(array, arrayIndex);
         }
 
         public int Count
