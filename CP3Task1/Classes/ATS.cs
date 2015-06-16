@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Checkpoint03.Classes;
 
-namespace CP3Task1
+namespace CP3Task1.Classes
 {
     [Serializable]
     public class ATS
@@ -38,8 +35,8 @@ namespace CP3Task1
             Random r = new Random();
             for (int i = 0; i < Ports.Count/2; i ++)
             {
-                var tmp = _ports.Where(x => x.PortState == PortState.UnPlugget).ToArray();
-                tmp[r.Next(1, tmp.Length)].PortState = PortState.Plugget;
+                var tmp = _ports.Where(x => x.PortState == PortState.UnPlugged).ToArray();
+                tmp[r.Next(1, tmp.Length)].PortState = PortState.Plugged;
             }
         }
 
@@ -54,7 +51,7 @@ namespace CP3Task1
                         Name = String.Format("{0}{1}", new String('0', 6 - i.ToString().Length), i),
                         Number = i
                     },
-                    PortState = PortState.UnPlugget
+                    PortState = PortState.UnPlugged
                 };
                 Serializer.SaveToXml(Path.Combine(Program.AppPath, Program.PortData[0], Path.ChangeExtension(port.PhoneNumber.Name, Program.PortData[1])), port);
             }
@@ -69,8 +66,8 @@ namespace CP3Task1
             Random r = new Random();
             for (int i = 0; i < Ports.Count / 2; i++)
             {
-                var tmp = _ports.Where(x => x.PortState == PortState.UnPlugget).ToArray();
-                tmp[r.Next(1, tmp.Length)].PortState = PortState.Plugget;
+                var tmp = _ports.Where(x => x.PortState == PortState.UnPlugged).ToArray();
+                tmp[r.Next(1, tmp.Length)].PortState = PortState.Plugged;
             }
         }
 
@@ -85,7 +82,20 @@ namespace CP3Task1
                     Port = null,
                     TerminalState = TerminalState.Off
                 };
-                Serializer.SaveToXml(Path.Combine(Program.AppPath, Program.TerminaData[0], Path.ChangeExtension(terminal.Number.ToString(), Program.PortData[1])), port);
+                Serializer.SaveToXml(Path.Combine(Program.AppPath, Program.TerminalData[0], Path.ChangeExtension(terminal.Number.ToString(), Program.PortData[1])), terminal);
+            }
+        }
+
+        public void ConnectTerminals()
+        {
+            foreach (var t in Terminals)
+            {
+                t.Port = _ports.FirstOrDefault(x => x.PhoneNumber.Number == t.Number);
+                
+                if ((t.Port != null) && (t.Port.PortState == PortState.Plugged))
+                {
+                    t.ConnectToPort(this, null);
+                }
             }
         }
 
@@ -100,10 +110,18 @@ namespace CP3Task1
             // loading ports
             foreach (Port port in dir.GetFiles(searchPattern: String.Format("*.{0}", Program.PortData[1])).Select(f => Port.LoadFromFile(Int32.Parse(Path.GetFileNameWithoutExtension(f.Name)))))
             {
+                port.Ats = this;
                 _ports.Add(port); 
             }
+            dir = new DirectoryInfo(Path.GetDirectoryName(Terminal.GenerateFileName(0)));
+            if (!Directory.Exists(dir.FullName))
+                return;
+            // loading terminals
+            foreach (Terminal terminal in dir.GetFiles(searchPattern: String.Format("*.{0}", Program.TerminalData[1])).Select(f => Terminal.LoadFromFile(Int32.Parse(Path.GetFileNameWithoutExtension(f.Name)))))
+            {
+                terminal.Ats = this;
+                _terminals.Add(terminal);
+            }
         }
-
-
     }
 }
