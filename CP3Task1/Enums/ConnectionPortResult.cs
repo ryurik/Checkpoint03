@@ -5,6 +5,6 @@
         StationFail,
         Default = StationFail,
         PortClosed,
-        Ok
+        PortListning
     }
 }

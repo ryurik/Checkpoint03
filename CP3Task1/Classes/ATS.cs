@@ -35,8 +35,8 @@ namespace CP3Task1.Classes
             Random r = new Random();
             for (int i = 0; i < Ports.Count/2; i ++)
             {
-                var tmp = _ports.Where(x => x.PortState == PortState.UnPlugged).ToArray();
-                tmp[r.Next(1, tmp.Length)].PortState = PortState.Plugged;
+                var tmp = _ports.Where(x => x.PortState == PortStateForAts.UnPlugged).ToArray();
+                tmp[r.Next(1, tmp.Length)].PortState = PortStateForAts.Plugged;
             }
         }
 
@@ -51,7 +51,7 @@ namespace CP3Task1.Classes
                         Name = String.Format("{0}{1}", new String('0', 6 - i.ToString().Length), i),
                         Number = i
                     },
-                    PortState = PortState.UnPlugged
+                    PortState = PortStateForAts.UnPlugged
                 };
                 Serializer.SaveToXml(Path.Combine(Program.AppPath, Program.PortData[0], Path.ChangeExtension(port.PhoneNumber.Name, Program.PortData[1])), port);
             }
@@ -66,8 +66,8 @@ namespace CP3Task1.Classes
             Random r = new Random();
             for (int i = 0; i < Ports.Count / 2; i++)
             {
-                var tmp = _ports.Where(x => x.PortState == PortState.UnPlugged).ToArray();
-                tmp[r.Next(1, tmp.Length)].PortState = PortState.Plugged;
+                var tmp = _ports.Where(x => x.PortState == PortStateForAts.UnPlugged).ToArray();
+                tmp[r.Next(1, tmp.Length)].PortState = PortStateForAts.Plugged;
             }
         }
 
@@ -92,7 +92,7 @@ namespace CP3Task1.Classes
             {
                 t.Port = _ports.FirstOrDefault(x => x.PhoneNumber.Number == t.Number);
                 
-                if ((t.Port != null) && (t.Port.PortState == PortState.Plugged))
+                if ((t.Port != null) && (t.Port.PortState == PortStateForAts.Plugged))
                 {
                     t.ConnectToPort(this, null);
                 }

@@ -20,14 +20,14 @@ namespace CP3Task1
 
             ATS ats = new ATS();
             Console.WriteLine("Loaded {0} port{1}", ats.Ports.Count, (ats.Ports.Count > 1) ? "s": "");
-            Console.WriteLine("Of these are {0} : {1} ", PortState.UnPlugget, ats.Ports.Where(x=>x.PortState == PortState.UnPlugget).Count());
+            Console.WriteLine("Of these are {0} : {1} ", PortStateForAts.UnPlugged.ToString(), ats.Ports.Where(x=>x.PortState == PortStateForAts.UnPlugged).Count());
             //ats.CreateFirstPorts(100);
             //ats.CreateFirstTerminals(100);
 
             ats.ActivatePortsFromContracts();
             ats.ConnectTerminals();
 
-            Console.WriteLine("After activation {0} : {1} ", PortState.Plugget, ats.Ports.Where(x => x.PortState == PortState.Plugget).Count());
+            Console.WriteLine("After activation {0} : {1} ", PortStateForAts.Plugged, ats.Ports.Where(x => x.PortState == PortStateForAts.Plugged).Count());
 
 
             Console.ReadKey();

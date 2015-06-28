@@ -1,10 +1,11 @@
-﻿using CP3Task1.Enums;
+﻿using System;
+using CP3Task1.Enums;
 
 namespace CP3Task1.Classes
 {
-    public class PortEventArgs
+    public class PortEventArgs : EventArgs
     {
-        public PortState PortState { get; set; }
+        public PortStateForAts PortState { get; set; }
         public ConnectionPortResult ConnectionPortResult { get; set; }
     }
 }

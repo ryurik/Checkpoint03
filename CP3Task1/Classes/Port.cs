@@ -6,17 +6,16 @@ using System.Runtime.Remoting;
 using System.Text;
 using Checkpoint03.Classes;
 using CP3Task1.Classes;
+using CP3Task1.Enums;
 
 
 namespace CP3Task1
 {
-    public delegate bool ConectToPort(int portNumber);
-
     [Serializable]
     public class Port
     {
         public PhoneNumber PhoneNumber { get; set; }
-        public PortState PortState { get; set; }
+        public PortStateForAts PortState { get; set; }
         public ATS Ats { get; set; }
 
         private EventHandler<EventArgs> _portEvent;
@@ -49,13 +48,20 @@ namespace CP3Task1
             }
         }
 
+        // event "ConnectToPort" from Terminal 
+        public void TerminalConnectingToPort(Object sender, PortEventArgs args)
+        {
+            args.PortState = PortState;
+            args.ConnectionPortResult = ConnectionPortResult.PortListning;
+        }
+
         public void GenerateEvent()
         {
             OnPortEvent(this, null);
         }
 
-
-        public static void SaveToFile(PhoneNumber phoneNumber, PortState portState)
+        #region Work with  files
+        public static void SaveToFile(PhoneNumber phoneNumber, PortStateForAts portState)
         {
 
             Port port = new Port()
@@ -82,5 +88,6 @@ namespace CP3Task1
         {
             return Path.Combine(Program.AppPath, Program.PortData[0], Path.ChangeExtension(String.Format("{0}{1}", new String('0', 6 - portNumber.ToString().Length), portNumber), Program.PortData[1]));
         }
+        #endregion
     }
 }

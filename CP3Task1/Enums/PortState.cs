@@ -1,8 +1,9 @@
 ﻿namespace CP3Task1
 {
-    public enum PortState
+    public enum PortStateForAts
     {
         UnPlugged,
+        Default = UnPlugged,
         Plugged,
         Free,
         Busy

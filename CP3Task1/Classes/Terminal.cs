@@ -5,9 +5,11 @@ using System.Linq;
 using System.Text;
 using Checkpoint03.Classes;
 using CP3Task1.Classes;
+using CP3Task1.Enums;
 
 namespace CP3Task1
 {
+    //public delegate Call
     public class Terminal
     {
         public int Number { get; set; }
@@ -50,16 +52,18 @@ namespace CP3Task1
 
         protected virtual void OnConnecting(object sender, PortEventArgs args)
         {
-            if (_connecting != null)
+            // try to connect to port
+            var temp = _connecting;
+            if (temp != null)
             {
-                _connecting(this, args);
+                temp(this, args);
             }
         }
 
 
         public ConnectionResult StartCall(PhoneNumber targetPhoneNumber)
         {
-            if ((Port != null) && (Port.PortState == PortState.Free))
+            if ((Port != null) && (Port.PortState == PortStateForAts.Free))
             {
                 var args = new CallingEventArgs()
                 {
@@ -80,11 +84,25 @@ namespace CP3Task1
 
         public void SwitchOn()
         {
-            if (Ats != null)
+            // Try to register Termnal. Test Port status
+            if (Port != null)
             {
-               // Ats.
+                ConnectToPort();
             }
-           // Port = 
+            if (Port != null)
+            {
+                ;
+            }
+        }
+
+        private void ConnectToPort()
+        {
+            var args = new PortEventArgs() { ConnectionPortResult = ConnectionPortResult.Default, PortState = PortStateForAts.Default};
+            OnConnecting(this, args);
+            if (args.ConnectionPortResult == ConnectionPortResult.PortListning)
+            {
+                TerminalState = TerminalState.On;
+            }
         }
         public void SwitchOff()
         {
