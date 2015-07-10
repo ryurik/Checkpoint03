@@ -1,13 +1,40 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Checkpoint03.Classes;
+using CP3Task1.Classes.EventArgs;
 
 namespace CP3Task1.Classes
 {
+    public delegate void DelegateCallToTerminal(Object Object, System.EventArgs args);
+
+    class AAA<P, E>
+    {
+        public P _port;
+        public E _event;
+
+        public AAA(P inPort, E inEvent)
+        {
+            _port = inPort;
+            _event = inEvent;
+        }
+    }
+
     [Serializable]
     public class ATS
     {
+        static void Test(Object Object, System.EventArgs args)
+        {
+            // BINGO!!!!
+        }
+
+        public static DelegateCallToTerminal TestEvent(object Object, System.EventArgs args)
+        {
+            return null;
+        }
+
+        private List<AAA<Port, DelegateCallToTerminal>> listCallToTerminals = new List<AAA<Port, DelegateCallToTerminal>>();
         private PortSet _ports = new PortSet();
         private TerminalSet _terminals = new TerminalSet();
         
@@ -32,11 +59,23 @@ namespace CP3Task1.Classes
 
         public void ActivatePortsFromContracts()
         {
-            Random r = new Random();
-            for (int i = 0; i < Ports.Count/2; i ++)
+            foreach (var p in Ports)
             {
-                var tmp = _ports.Where(x => x.PortState == PortStateForAts.UnPlugged).ToArray();
-                tmp[r.Next(1, tmp.Length)].PortState = PortStateForAts.Plugged;
+                //Create array for each Ports and try to subscribe port to Event
+//                var args = new CallingEventArgs() {ConnectionResult = ConnectionResult.Default, Tagget = p.PhoneNumber};
+
+                DelegateCallToTerminal callToTerminal = Test;
+                var aaa = new AAA<Port, DelegateCallToTerminal>(p, callToTerminal);
+
+                p.IncomingCall += Test;
+                listCallToTerminals.Add(aaa);
+            }
+
+            Random r = new Random();
+            for (int i = 0; i < Ports.Count / 2; i ++)
+            {
+                var tmp = _ports.Where(x => x.PortStateForAts == PortStateForAts.UnPlugged).ToArray();
+                tmp[r.Next(1, tmp.Length)].PortStateForAts = PortStateForAts.Plugged | PortStateForAts.Free;
             }
         }
 
@@ -51,7 +90,7 @@ namespace CP3Task1.Classes
                         Name = String.Format("{0}{1}", new String('0', 6 - i.ToString().Length), i),
                         Number = i
                     },
-                    PortState = PortStateForAts.UnPlugged
+                    PortStateForAts = PortStateForAts.UnPlugged
                 };
                 Serializer.SaveToXml(Path.Combine(Program.AppPath, Program.PortData[0], Path.ChangeExtension(port.PhoneNumber.Name, Program.PortData[1])), port);
             }
@@ -66,8 +105,8 @@ namespace CP3Task1.Classes
             Random r = new Random();
             for (int i = 0; i < Ports.Count / 2; i++)
             {
-                var tmp = _ports.Where(x => x.PortState == PortStateForAts.UnPlugged).ToArray();
-                tmp[r.Next(1, tmp.Length)].PortState = PortStateForAts.Plugged;
+                var tmp = _ports.Where(x => x.PortStateForAts == PortStateForAts.UnPlugged).ToArray();
+                tmp[r.Next(1, tmp.Length)].PortStateForAts = PortStateForAts.Plugged;
             }
         }
 
@@ -77,12 +116,12 @@ namespace CP3Task1.Classes
             {
                 Terminal terminal = new Terminal()
                 {
-                    Ats = this,
+                    Ats = null,
                     Number = i,
                     Port = null,
                     TerminalState = TerminalState.Off
                 };
-                Serializer.SaveToXml(Path.Combine(Program.AppPath, Program.TerminalData[0], Path.ChangeExtension(terminal.Number.ToString(), Program.PortData[1])), terminal);
+                Serializer.SaveToXml(Path.Combine(Program.AppPath, Program.TerminalData[0], Path.ChangeExtension(String.Format("{0}{1}", new String('0', 6 - terminal.Number.ToString().Length), terminal.Number), Program.TerminalData[1])), terminal);
             }
         }
 
@@ -92,15 +131,29 @@ namespace CP3Task1.Classes
             {
                 t.Port = _ports.FirstOrDefault(x => x.PhoneNumber.Number == t.Number);
                 
-                if ((t.Port != null) && (t.Port.PortState == PortStateForAts.Plugged))
+                if ((t.Port != null) && (t.Port.PortStateForAts == PortStateForAts.Plugged))
                 {
-                    t.ConnectToPort(this, null);
+                    //t.ConnectToPort(this, null);
                 }
             }
         }
 
         #endregion
 
+        public void CallToTerminal(PhoneNumber phoneNumber)
+        {
+            var port = _ports.FirstOrDefault(x => x.PhoneNumber.Number == phoneNumber.Number);
+            // if we can call to Port 
+            if ((port != null) && 
+                (((port.PortStateForAts & PortStateForAts.Plugged) != 0) && ((port.PortStateForAts & PortStateForAts.Free) !=0)))
+            {
+                var args = new CallingEventArgs() {ConnectionResult = ConnectionResult.Default, Tagget = phoneNumber};
+                var p = listCallToTerminals.FirstOrDefault(x => x._port.PhoneNumber.Number == phoneNumber.Number);
+                if (p == null) return;
+                DelegateCallToTerminal dct = p._event;
+                dct(this, args);
+            }
+        }
         
         private void LoadData()
         {

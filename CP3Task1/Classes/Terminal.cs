@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Checkpoint03.Classes;
 using CP3Task1.Classes;
+using CP3Task1.Classes.EventArgs;
 using CP3Task1.Enums;
 
 namespace CP3Task1
@@ -12,33 +13,76 @@ namespace CP3Task1
     //public delegate Call
     public class Terminal
     {
-        public int Number { get; set; }
-        public TerminalState TerminalState { get; set; }
-        public Port Port { get; set; }
-        public ATS Ats { get; set; }
+        private int _number;
+        private TerminalState _terminalState;
+        private Port _port;
+        private ATS _ats;
 
-        private EventHandler<CallingEventArgs> _calling;
-        private EventHandler<PortEventArgs> _connecting;
+        public int Number
+        {
+            get { return _number; }
+            set { _number = value; }
+        }
+
+        public TerminalState TerminalState
+        {
+            get { return _terminalState; }
+            set
+            {
+                _terminalState = value; 
+                ConnectToPort(value);
+            }
+        }
+
+        public Port Port
+        {
+            get { return _port; }
+            set
+            {
+                _port = value;
+                if (value != null)
+                {
+                    Connecting += value.TerminalConnectingToPort;
+                }
+            }
+        }
+
+        public ATS Ats
+        {
+            get { return _ats; }
+            set { _ats = value; }
+        }
+
+
+        private EventHandler<CallingEventArgs> _callInHandler;
+        private EventHandler<CallingEventArgs> _callOutHandler;
+        private EventHandler<PortEventArgs> _connectingHandler;
 
         public event EventHandler<CallingEventArgs> AfterCalling;
 
-        public event EventHandler<CallingEventArgs> Calling
+        public event EventHandler<CallingEventArgs> CallIn
         {
-            add { _calling += value; }
-            remove { _calling -= value; }
+            add { _callInHandler += value; }
+            remove { _callInHandler -= value; }
+        }
+
+        public event EventHandler<CallingEventArgs> CallOut
+        {
+            add { _callOutHandler += value; }
+            remove { _callOutHandler -= value; }
         }
 
         public event EventHandler<PortEventArgs> Connecting
         {
-            add { _connecting += value; }
-            remove { _connecting -= value; }
+            add { _connectingHandler += value; }
+            remove { _connectingHandler -= value; }
         }
 
-        protected virtual void OnCalling(object sender, CallingEventArgs args)
+        public virtual void OnCalling(object sender, CallingEventArgs args)
         {
-            if (_calling != null)
+            if (_callInHandler != null)
             {
-                _calling(sender, args);
+                _callInHandler(sender, args);
             }
         }
 
@@ -53,7 +97,7 @@ namespace CP3Task1
         protected virtual void OnConnecting(object sender, PortEventArgs args)
         {
             // try to connect to port
-            var temp = _connecting;
+            var temp = _connectingHandler;
             if (temp != null)
             {
                 temp(this, args);
@@ -63,7 +107,7 @@ namespace CP3Task1
 
         public ConnectionResult StartCall(PhoneNumber targetPhoneNumber)
         {
-            if ((Port != null) && (Port.PortState == PortStateForAts.Free))
+            if ((_port != null) && (_port.PortStateForAts == PortStateForAts.Free))
             {
                 var args = new CallingEventArgs()
                 {
@@ -84,30 +128,29 @@ namespace CP3Task1
 
         public void SwitchOn()
         {
-            // Try to register Termnal. Test Port status
-            if (Port != null)
+            TerminalState = TerminalState.On;
+            if ((Port != null) && (Port.PortStateForAts == PortStateForAts.Plugged))
             {
-                ConnectToPort();
-            }
-            if (Port != null)
-            {
-                ;
+                this.CallIn += Port.OnIncomingCall;
             }
         }
 
-        private void ConnectToPort()
-        {
-            var args = new PortEventArgs() { ConnectionPortResult = ConnectionPortResult.Default, PortState = PortStateForAts.Default};
-            OnConnecting(this, args);
-            if (args.ConnectionPortResult == ConnectionPortResult.PortListning)
-            {
-                TerminalState = TerminalState.On;
-            }
-        }
         public void SwitchOff()
         {
-
+            TerminalState = TerminalState.Off;
         }
+
+        public void ConnectToPort(TerminalState terminalState)
+        {
+            var args = new PortEventArgs()
+            {
+                ConnectionPortResult = ConnectionPortResult.Default, 
+                PortState = PortStateForAts.Default, 
+                TerminalState = terminalState
+            };
+            OnConnecting(this, args);
+        }
+
         #region WorkWithFiles
         public static void SaveToFile(PhoneNumber phoneNumber)
         {
@@ -115,9 +158,9 @@ namespace CP3Task1
             Terminal terminal = new Terminal()
             {
                 Ats = null,
-                Number = phoneNumber.Number,
-                Port = null,
-                TerminalState = TerminalState.Off,
+                _number = phoneNumber.Number,
+                _port = null,
+                _terminalState = TerminalState.Off,
             };
             string fileName = GenerateFileName(phoneNumber.Number);
             Serializer.SaveToXml(fileName, terminal);
@@ -140,9 +183,10 @@ namespace CP3Task1
         }
         #endregion
 
-        public void ConnectToPort(object sender, PortEventArgs args)
+        public void ConnectFromPort(object sender, TerminalState args)
         {
-            OnConnecting(sender, args);
+            // if we have a reaction from terminal its mean what terminal is On
+            args = TerminalState.On;
         }
     }
 }

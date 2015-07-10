@@ -6,6 +6,7 @@ using System.Runtime.Remoting;
 using System.Text;
 using Checkpoint03.Classes;
 using CP3Task1.Classes;
+using CP3Task1.Classes.EventArgs;
 using CP3Task1.Enums;
 // dzmitry_nikitsik@epam.com
 
@@ -15,33 +16,53 @@ namespace CP3Task1
     public class Port
     {
         public PhoneNumber PhoneNumber { get; set; }
-        public PortStateForAts PortState { get; set; }
+        public PortStateForAts PortStateForAts { get; set; }
         public ATS Ats { get; set; }
 
-        private EventHandler<EventArgs> _portEvent;
+        private EventHandler<EventArgs> _portEventHandler;
+        private EventHandler<CallingEventArgs> _incomingCallEventHandler;
 
         public event EventHandler<EventArgs> PortEvent
         {
             add
             {
-                if (_portEvent != null)
+                if (_portEventHandler != null)
                 {
-                    if (!_portEvent.GetInvocationList().Contains(value))
+                    if (!_portEventHandler.GetInvocationList().Contains(value))
                     {
-                        _portEvent += value;
+                        _portEventHandler += value;
                     }
                 }
                 else
                 {
-                    _portEvent += value;
+                    _portEventHandler += value;
                 }
             }
-            remove { _portEvent -= value; }
+            remove { _portEventHandler -= value; }
+        }
+
+        public event EventHandler<CallingEventArgs> IncomingCall
+        {
+            add
+            {
+                if (_incomingCallEventHandler != null)
+                {
+                    if (!_incomingCallEventHandler.GetInvocationList().Contains(value))
+                    {
+                        _incomingCallEventHandler += value;
+                    }
+                }
+                else
+                {
+                    _incomingCallEventHandler += value;
+                }
+            }
+            remove { _incomingCallEventHandler -= value; }
         }
 
         protected virtual void OnPortEvent(Object sender, EventArgs args)
         {
-            var temp = _portEvent;
+            var temp = _portEventHandler;
             if (temp != null)
             {
                 temp(sender, args);
@@ -51,14 +72,27 @@ namespace CP3Task1
         // event "ConnectToPort" from Terminal 
         public void TerminalConnectingToPort(Object sender, PortEventArgs args)
         {
-            args.PortState = PortState;
+            //if (args.)
+            args.PortState = PortStateForAts;
             args.ConnectionPortResult = ConnectionPortResult.PortListning;
+        }
+
+        public void OnIncomingCall(Object sender, EventArgs args)
+        {
+            if (args is PortEventArgs)
+            {
+                //if ( != null)
+                //{
+                //    Ats.
+                //}
+            }
         }
 
         public void GenerateEvent()
         {
             OnPortEvent(this, null);
         }
+
 
         #region Work with  files
         public static void SaveToFile(PhoneNumber phoneNumber, PortStateForAts portState)
@@ -67,7 +101,7 @@ namespace CP3Task1
             Port port = new Port()
             {
                 PhoneNumber = phoneNumber,
-                PortState = portState,
+                PortStateForAts = portState,
                 Ats = null,
             };
             string fileName = GenerateFileName(phoneNumber.Number);

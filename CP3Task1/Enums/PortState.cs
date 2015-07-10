@@ -1,5 +1,8 @@
-﻿namespace CP3Task1
+﻿using System;
+
+namespace CP3Task1
 {
+    [Flags]
     public enum PortStateForAts
     {
         UnPlugged,
