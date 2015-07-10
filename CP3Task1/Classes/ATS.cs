@@ -24,9 +24,42 @@ namespace CP3Task1.Classes
     [Serializable]
     public class ATS
     {
-        static void Test(Object Object, System.EventArgs args)
+        private  EventHandler<System.EventArgs> callToTerminalEventHandler;
+
+        public  event EventHandler<System.EventArgs> CallToTerminalEvent
+        {
+            add
+            {
+                if (callToTerminalEventHandler != null)
+                {
+                    if (!callToTerminalEventHandler.GetInvocationList().Contains(value))
+                    {
+                        callToTerminalEventHandler += value;
+                    }
+                }
+                else
+                {
+                    callToTerminalEventHandler += value;
+                }
+            }
+            remove { callToTerminalEventHandler -= value; }
+        }
+
+
+
+        void Test(Object sender, System.EventArgs args)
         {
             // BINGO!!!!
+            var temp = callToTerminalEventHandler;
+            if (temp != null)
+            {
+                temp(sender, args);
+            }
+            else
+            {
+                Console.WriteLine("A'm lonely s=" + (args as CallingEventArgs).Tagget.Number.ToString());
+            }
+
         }
 
         public static DelegateCallToTerminal TestEvent(object Object, System.EventArgs args)
@@ -65,9 +98,9 @@ namespace CP3Task1.Classes
 //                var args = new CallingEventArgs() {ConnectionResult = ConnectionResult.Default, Tagget = p.PhoneNumber};
 
                 DelegateCallToTerminal callToTerminal = Test;
+                this.CallToTerminalEvent += p.OnIncomingCall;
                 var aaa = new AAA<Port, DelegateCallToTerminal>(p, callToTerminal);
 
-                p.IncomingCall += Test;
                 listCallToTerminals.Add(aaa);
             }
 
@@ -151,7 +184,7 @@ namespace CP3Task1.Classes
                 var p = listCallToTerminals.FirstOrDefault(x => x._port.PhoneNumber.Number == phoneNumber.Number);
                 if (p == null) return;
                 DelegateCallToTerminal dct = p._event;
-                dct(this, args);
+                dct(p, args);
             }
         }
         

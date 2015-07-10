@@ -81,10 +81,7 @@ namespace CP3Task1
         {
             if (args is PortEventArgs)
             {
-                //if ( != null)
-                //{
-                //    Ats.
-                //}
+                Console.WriteLine("Incoming call from ATS!!!");
             }
         }
 
