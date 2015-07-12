@@ -31,6 +31,10 @@ namespace CP3Task1
             {
                 _terminalState = value; 
                 ConnectToPort(value);
+                if (Ats != null)
+                {
+                    Ats.addCallFromPortToTerminalListener(this, OnIncomingCall);
+                }
             }
         }
 
@@ -78,13 +82,10 @@ namespace CP3Task1
             remove { _connectingHandler -= value; }
         }
 
-        public virtual void OnCalling(object sender, CallingEventArgs args)
+        public void OnIncomingCall(Object sender, EventArgs args)
         {
-            var temp = _callInHandler;
-            if (temp != null)
-            {
-                temp(sender, args); //Generate Event Call (port mut be subscribe to this event)
-            }
+            Console.WriteLine("I'am a terminal #{0} and I'm get Call from ATS", Number);
+            // If we We must to change the port state to 
         }
 
         protected void OnAfterCalling(CallingEventArgs args)
@@ -115,7 +116,6 @@ namespace CP3Task1
                     Tagget = targetPhoneNumber,
                     ConnectionResult = ConnectionResult.Default
                 };
-                OnCalling(this, args);
                 OnAfterCalling(args);
                 return args.ConnectionResult;
 
@@ -126,11 +126,6 @@ namespace CP3Task1
         public void SwitchOn()
         {
             TerminalState = TerminalState.On;
-            if ((Port != null) && (Port.PortStateForAts == PortStateForAts.Plugged))
-            {
-                this.CallIn += Port.OnIncomingCall;
-                Port.OutgoingCall += this.OnCalling;
-            }
         }
 
         public void SwitchOff()

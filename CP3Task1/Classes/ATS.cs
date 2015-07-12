@@ -68,6 +68,40 @@ namespace CP3Task1.Classes
         }
 
         private List<PortEvent<Port, DelegateCallToTerminal>> listCallToTerminals = new List<PortEvent<Port, DelegateCallToTerminal>>();
+        private Dictionary<Terminal, DelegateCallToTerminal> callFromPortToTerminalListner = new Dictionary<Terminal, DelegateCallToTerminal>();
+        private Dictionary<Port, DelegateCallToTerminal> callFromAtsToPortListner = new Dictionary<Port, DelegateCallToTerminal>();
+
+
+        public void addCallFromPortToTerminalListener(Terminal terminal, DelegateCallToTerminal listener)
+        {
+            if (listener == null) return;
+            if (callFromPortToTerminalListner.ContainsKey(terminal)) callFromPortToTerminalListner[terminal] += listener;
+            else callFromPortToTerminalListner[terminal] = listener;
+        }
+
+        public void addCallFromAtsToProtListener(Port port, DelegateCallToTerminal listener)
+        {
+            if (listener == null) return;
+            if (callFromAtsToPortListner.ContainsKey(port)) callFromAtsToPortListner[port] += listener;
+            else callFromAtsToPortListner[port] = listener;
+        }
+
+        public void TransferCallFromPortToTerminal(Object sender, System.EventArgs args)
+        {
+            if ((sender != null) && (sender is Port))
+            {
+                var t = _terminals.FirstOrDefault(x=>x.Number == (sender as Port).PhoneNumber.Number);
+                if ((t != null) && (callFromPortToTerminalListner.ContainsKey(t)))
+                {
+                    callFromPortToTerminalListner[t](this, args);
+                }
+                else
+                {
+                    Console.WriteLine("Terminal with number {0} doesn't exist");
+                }
+            }
+        }
+
         private PortSet _ports = new PortSet();
         private TerminalSet _terminals = new TerminalSet();
         
@@ -92,18 +126,6 @@ namespace CP3Task1.Classes
 
         public void ActivatePortsFromContracts()
         {
-            foreach (var p in Ports)
-            {
-                //Create array for each Ports and try to subscribe port to Event
-//                var args = new CallingEventArgs() {ConnectionResult = ConnectionResult.Default, Tagget = p.PhoneNumber};
-
-                DelegateCallToTerminal callToTerminal = OnIncomingCall;
-                this.CallToTerminalEvent += p.OnIncomingCall;
-                var aaa = new PortEvent<Port, DelegateCallToTerminal>(p, callToTerminal);
-
-                listCallToTerminals.Add(aaa);
-            }
-
             Random r = new Random();
             for (int i = 0; i < Ports.Count / 2; i ++)
             {
@@ -163,9 +185,11 @@ namespace CP3Task1.Classes
             foreach (var t in Terminals)
             {
                 t.Port = _ports.FirstOrDefault(x => x.PhoneNumber.Number == t.Number);
-                
-                if ((t.Port != null) && (t.Port.PortStateForAts == PortStateForAts.Plugged))
+
+                if ((t.Port != null) && (t.Port.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)))
                 {
+                    t.SwitchOn();
+                    Console.WriteLine("Terminal #{0} are plugged", t.Number);
                     //t.ConnectToPort(this, null);
                 }
             }
@@ -176,15 +200,18 @@ namespace CP3Task1.Classes
         public void CallToTerminal(PhoneNumber phoneNumber)
         {
             var port = _ports.FirstOrDefault(x => x.PhoneNumber.Number == phoneNumber.Number);
-            // if we can call to Port 
-            if ((port != null) && 
-                (((port.PortStateForAts & PortStateForAts.Plugged) != 0) && ((port.PortStateForAts & PortStateForAts.Free) !=0)))
+            if ((port != null) && (port.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)))
             {
                 var args = new CallingEventArgs() {ConnectionResult = ConnectionResult.Default, Tagget = phoneNumber};
-                var p = listCallToTerminals.FirstOrDefault(x => x._port.PhoneNumber.Number == phoneNumber.Number);
-                if (p == null) return;
-                DelegateCallToTerminal dct = p._event;
-                dct(p, args);
+                if (callFromAtsToPortListner.ContainsKey(port))
+                {
+                    callFromAtsToPortListner[port](this, args);
+                }
+                else
+                {
+                    Console.WriteLine("Port with number {0} doesn't exist");
+                    return;
+                }
             }
         }
         

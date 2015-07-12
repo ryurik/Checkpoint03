@@ -15,8 +15,21 @@ namespace CP3Task1
     [Serializable]
     public class Port
     {
+        private PortStateForAts _portStateForAts;
+
         public PhoneNumber PhoneNumber { get; set; }
-        public PortStateForAts PortStateForAts { get; set; }
+        public PortStateForAts PortStateForAts {
+            get { return _portStateForAts; }
+            set
+            {
+                // try to subscribe
+                if (value == (PortStateForAts.Plugged | PortStateForAts.Free))
+                {
+                    Ats.addCallFromAtsToProtListener(this, OnIncomingCall);
+                }
+                _portStateForAts = value;
+            }
+        }
         public ATS Ats { get; set; }
 
         private EventHandler<EventArgs> _portEventHandler;
@@ -93,23 +106,24 @@ namespace CP3Task1
         // event "ConnectToPort" from Terminal 
         public void TerminalConnectingToPort(Object sender, PortEventArgs args)
         {
-            //if (args.)
             args.PortState = PortStateForAts;
             args.ConnectionPortResult = ConnectionPortResult.PortListning;
         }
 
         public void OnIncomingCall(Object sender, EventArgs args)
         {
-            if (args is PortEventArgs)
+            if (args is CallingEventArgs)
             {
-                Console.WriteLine("Incoming call from ATS!!!");
-                TransferCallToTerminal(sender, args);
+                Console.WriteLine("I'm port #{0} and I have incoming call from ATS!!!", PhoneNumber.Number);
+                TransferCallToTerminal(this, args);
             }
         }
 
         private void TransferCallToTerminal(object sender, EventArgs args)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Try to transfer call from port #{0} to terminal #{0}", PhoneNumber.Number);
+            Ats.TransferCallFromPortToTerminal(this, args);
+
         }
 
         public void OnOutgoingCall(Object sender, EventArgs args)
