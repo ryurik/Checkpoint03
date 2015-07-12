@@ -80,9 +80,10 @@ namespace CP3Task1
 
         public virtual void OnCalling(object sender, CallingEventArgs args)
         {
-            if (_callInHandler != null)
+            var temp = _callInHandler;
+            if (temp != null)
             {
-                _callInHandler(sender, args);
+                temp(sender, args); //Generate Event Call (port mut be subscribe to this event)
             }
         }
 
@@ -119,11 +120,7 @@ namespace CP3Task1
                 return args.ConnectionResult;
 
             }
-            else
-            {
-                return ConnectionResult.Default;
-            }
-
+            return ConnectionResult.Default;
         }
 
         public void SwitchOn()
@@ -132,6 +129,7 @@ namespace CP3Task1
             if ((Port != null) && (Port.PortStateForAts == PortStateForAts.Plugged))
             {
                 this.CallIn += Port.OnIncomingCall;
+                Port.OutgoingCall += this.OnCalling;
             }
         }
 

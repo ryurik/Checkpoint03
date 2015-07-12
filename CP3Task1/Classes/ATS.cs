@@ -9,12 +9,12 @@ namespace CP3Task1.Classes
 {
     public delegate void DelegateCallToTerminal(Object Object, System.EventArgs args);
 
-    class AAA<P, E>
+    class PortEvent<P, E>
     {
         public P _port;
         public E _event;
 
-        public AAA(P inPort, E inEvent)
+        public PortEvent(P inPort, E inEvent)
         {
             _port = inPort;
             _event = inEvent;
@@ -47,7 +47,7 @@ namespace CP3Task1.Classes
 
 
 
-        void Test(Object sender, System.EventArgs args)
+        void OnIncomingCall(Object sender, System.EventArgs args)
         {
             // BINGO!!!!
             var temp = callToTerminalEventHandler;
@@ -67,7 +67,7 @@ namespace CP3Task1.Classes
             return null;
         }
 
-        private List<AAA<Port, DelegateCallToTerminal>> listCallToTerminals = new List<AAA<Port, DelegateCallToTerminal>>();
+        private List<PortEvent<Port, DelegateCallToTerminal>> listCallToTerminals = new List<PortEvent<Port, DelegateCallToTerminal>>();
         private PortSet _ports = new PortSet();
         private TerminalSet _terminals = new TerminalSet();
         
@@ -97,9 +97,9 @@ namespace CP3Task1.Classes
                 //Create array for each Ports and try to subscribe port to Event
 //                var args = new CallingEventArgs() {ConnectionResult = ConnectionResult.Default, Tagget = p.PhoneNumber};
 
-                DelegateCallToTerminal callToTerminal = Test;
+                DelegateCallToTerminal callToTerminal = OnIncomingCall;
                 this.CallToTerminalEvent += p.OnIncomingCall;
-                var aaa = new AAA<Port, DelegateCallToTerminal>(p, callToTerminal);
+                var aaa = new PortEvent<Port, DelegateCallToTerminal>(p, callToTerminal);
 
                 listCallToTerminals.Add(aaa);
             }

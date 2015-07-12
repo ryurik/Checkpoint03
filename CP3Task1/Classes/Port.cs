@@ -21,6 +21,7 @@ namespace CP3Task1
 
         private EventHandler<EventArgs> _portEventHandler;
         private EventHandler<CallingEventArgs> _incomingCallEventHandler;
+        private EventHandler<CallingEventArgs> _outgoingCallEventHandler;
 
         public event EventHandler<EventArgs> PortEvent
         {
@@ -60,6 +61,26 @@ namespace CP3Task1
             remove { _incomingCallEventHandler -= value; }
         }
 
+        public event EventHandler<CallingEventArgs> OutgoingCall
+        {
+            add
+            {
+                if (_outgoingCallEventHandler != null)
+                {
+                    if (!_outgoingCallEventHandler.GetInvocationList().Contains(value))
+                    {
+                        _outgoingCallEventHandler += value;
+                    }
+                }
+                else
+                {
+                    _outgoingCallEventHandler += value;
+                }
+            }
+            remove { _outgoingCallEventHandler -= value; }
+        }
+
+
         protected virtual void OnPortEvent(Object sender, EventArgs args)
         {
             var temp = _portEventHandler;
@@ -82,8 +103,29 @@ namespace CP3Task1
             if (args is PortEventArgs)
             {
                 Console.WriteLine("Incoming call from ATS!!!");
+                TransferCallToTerminal(sender, args);
             }
         }
+
+        private void TransferCallToTerminal(object sender, EventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnOutgoingCall(Object sender, EventArgs args)
+        {
+            if (args is PortEventArgs)
+            {
+                Console.WriteLine("Incoming call from ATS!!!");
+                TransferCallToAts(sender, args);
+            }
+        }
+
+        private void TransferCallToAts(object sender, EventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
 
         public void GenerateEvent()
         {

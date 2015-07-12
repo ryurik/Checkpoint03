@@ -31,7 +31,7 @@ namespace CP3Task1
 
             var p = ats.Ports.FirstOrDefault(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free));
 
-            ats.CallToTerminal(p.PhoneNumber); // try to call first pluged and free number
+            iiats.CallToTerminal(p.PhoneNumber); // try to call first pluged and free number
 
             Console.ReadKey();
         }
