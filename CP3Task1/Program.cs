@@ -31,15 +31,6 @@ namespace CP3Task1
 
             Console.WriteLine("After activation {0} : {1} ", PortStateForAts.Plugged, ats.Ports.Where(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)).Count());
 
-            var p = ats.Ports.FirstOrDefault(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free));
-
-            if (p != null)
-            {
-                ats.CallToTerminal(p.PhoneNumber); // try to call first pluged and free number
-            }
-            p = ats.Ports.Where(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)).Skip(1).First();
-            ats.CallToTerminal(p.PhoneNumber); // try to call to second pluged and free number
-
             const ConsoleKey exitKey = ConsoleKey.Escape; // Esc - exit from Console
             ConsoleKeyInfo cki;
             do
@@ -48,7 +39,17 @@ namespace CP3Task1
                 switch (cki.Key)
                 {
                     case ConsoleKey.D1:
-                        Console.WriteLine("Try to call:");
+                        Console.WriteLine("Try to call first free terminal:");
+
+                        var p = ats.Ports.FirstOrDefault(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free));
+
+                        if (p != null)
+                        {
+                            ats.CallToTerminal(p.PhoneNumber); // try to call first pluged and free number
+                        }
+                        //p = ats.Ports.Where(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)).Skip(1).First();
+                        //ats.CallToTerminal(p.PhoneNumber); // try to call to second pluged and free number
+
                         break;
                     case ConsoleKey.D2:
                         Console.WriteLine("Try to call:");

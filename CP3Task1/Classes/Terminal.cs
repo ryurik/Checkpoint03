@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,6 +36,8 @@ namespace CP3Task1
             get { return _terminalState; }
             set
             {
+                if (_terminalState == value)
+                    return;
                 switch (value)
                 {
                     case TerminalState.On:
@@ -58,7 +61,17 @@ namespace CP3Task1
 
         private void DisconnectFromPort(CP3Task1.TerminalState value)
         {
-            throw new NotImplementedException();
+            var tmp = _connectingHandler;
+            if (tmp != null)
+            {
+                var arg = new PortEventArgs()
+                {
+                    ConnectionPortResult = ConnectionPortResult.Default,
+                    PortStateForAts = PortStateForAts.Default,
+                    TerminalState = TerminalState.Off
+                };
+                tmp(this, arg);
+            }
         }
 
         public Port Port
@@ -94,7 +107,7 @@ namespace CP3Task1
 
         public void OnIncomingCall(Object sender, EventArgs args)
         {
-            Console.WriteLine("I'am a terminal #{0} and I'm get Call from ATS. Time:{1}", Number, DateTime.Now);
+            Trace.WriteLine(String.Format("I'am a terminal #{0} and I'm get Call from ATS. Time:{1}", Number, DateTime.Now));
             _callStartTime = DateTime.Now;
              _timer = new Timer(TimerCallback, null, 0, 1000);
         }
@@ -149,7 +162,7 @@ namespace CP3Task1
             var args = new PortEventArgs()
             {
                 ConnectionPortResult = ConnectionPortResult.Default, 
-                PortState = PortStateForAts.Default, 
+                PortStateForAts = PortStateForAts.Default, 
                 TerminalState = terminalState
             };
             OnConnecting(this, args);
@@ -163,7 +176,7 @@ namespace CP3Task1
 
             ConsoleColor color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), _colorNames[Number % _colorNames.Count()]);
             Console.ForegroundColor = color;
-            Console.WriteLine("In TimerCallback:{0} in terminal {1}. Call duration(s):{2:0}", DateTime.Now, Number, duration);
+            Trace.WriteLine(String.Format("In TimerCallback:{0} in terminal {1}. Call duration(s):{2:0}", DateTime.Now, Number, duration));
             Console.ForegroundColor = originalCC;
 
             if (duration > 30)
@@ -174,6 +187,7 @@ namespace CP3Task1
 
         private void HangUp()
         {
+            
             throw new NotImplementedException();
         }
 

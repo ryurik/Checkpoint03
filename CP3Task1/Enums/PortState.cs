@@ -5,10 +5,10 @@ namespace CP3Task1
     [Flags]
     public enum PortStateForAts
     {
-        UnPlugged,
+        UnPlugged = 0,
         Default = UnPlugged,
-        Plugged,
-        Free,
-        Busy
+        Plugged = 1,
+        Free = 2,
+        Busy = 4
     }
 }

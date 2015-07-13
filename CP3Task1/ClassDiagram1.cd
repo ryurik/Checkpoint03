@@ -3,30 +3,31 @@
   <Class Name="CP3Task1.Classes.ATS" Collapsed="true">
     <Position X="5.25" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ACAAAAAAAAAQBAgABAAAQAAEAACAAAAEAAAAAEAAIAA=</HashCode>
+      <HashCode>ACoAAgAAAAAQBAgABABEQAAEAACAAAAEAAgAAUACIAA=</HashCode>
       <FileName>Classes\ATS.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CP3Task1.Port" Collapsed="true">
     <Position X="8.75" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAoAAAAgAAAAIAAAAAAAwAgAAACAABAAAAAgAQAAWAA=</HashCode>
+      <HashCode>AAIAAAAgAAAQAAAAAAAAQggAAACAABAAAAgACQAAGAA=</HashCode>
       <FileName>Classes\Port.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CP3Task1.Terminal" Collapsed="true">
     <Position X="7" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EEAAAAAqAAABgAoCAEACABAACCGABAAACQAAAABJmAA=</HashCode>
+      <HashCode>EEAAAAAgAAAhgAoiAkAAABAACCGAAAAACQAIARBBGAg=</HashCode>
       <FileName>Classes\Terminal.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CP3Task1.Classes.EventArgs.CallingEventArgs" Collapsed="true">
     <Position X="7" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAEAAAAA=</HashCode>
       <FileName>EventArgs\CallingEventArgs.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="CP3Task1.PortSet" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="5.25" Y="1.75" Width="1.5" />
@@ -47,9 +48,10 @@
   <Class Name="CP3Task1.Classes.EventArgs.PortEventArgs">
     <Position X="7" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAQAAAAAAAAAAAAAAAgAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <HashCode>AAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAQgAAAAAAAA=</HashCode>
       <FileName>EventArgs\PortEventArgs.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Struct Name="CP3Task1.PhoneNumber" Collapsed="true">
     <Position X="5.25" Y="3" Width="1.5" />

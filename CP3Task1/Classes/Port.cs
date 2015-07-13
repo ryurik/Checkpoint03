@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Remoting;
@@ -57,31 +58,47 @@ namespace CP3Task1
         // event "ConnectToPort" from Terminal 
         public void TerminalConnectingToPort(Object sender, PortEventArgs args)
         {
-            args.PortState = PortStateForAts;
+            args.PortStateForAts = PortStateForAts;
             args.ConnectionPortResult = ConnectionPortResult.PortListning;
         }
 
         public void OnIncomingCall(Object sender, EventArgs args)
         {
+            if ((PortStateForAts & PortStateForAts.Busy) != 0)
+            {
+                if (args is CallingEventArgs)
+                {
+                    (args as CallingEventArgs).ConnectionResult = ConnectionResult.TargetBusy;
+                }
+                return;
+            }
+
             if (args is CallingEventArgs)
             {
-                Console.WriteLine("I'm port #{0} and I have incoming call from ATS!!!", PhoneNumber.Number);
+                Trace.WriteLine(String.Format("I'm port #{0} and I have incoming call from ATS!!!", PhoneNumber.Number));
                 TransferCallToTerminal(this, args);
+                if ((args as CallingEventArgs).ConnectionResult == ConnectionResult.Ok)
+                {
+                    PortStateForAts = (PortStateForAts.Plugged | PortStateForAts.Busy);
+                } 
             }
         }
 
         private void TransferCallToTerminal(object sender, EventArgs args)
         {
-            Console.WriteLine("Try to transfer call from port #{0} to terminal #{0}", PhoneNumber.Number);
+            Trace.WriteLine(String.Format("Try to transfer call from port #{0} to terminal #{0}", PhoneNumber.Number));
             Ats.TransferCallFromPortToTerminal(this, args);
-
+            if (args is CallingEventArgs)
+            {
+                (args as CallingEventArgs).ConnectionResult = ConnectionResult.Ok;
+            }
         }
 
         public void OnOutgoingCall(Object sender, EventArgs args)
         {
             if (args is PortEventArgs)
             {
-                Console.WriteLine("Incoming call from ATS!!!");
+                Trace.WriteLine("Incoming call from ATS!!!");
                 TransferCallToAts(sender, args);
             }
         }
@@ -90,7 +107,6 @@ namespace CP3Task1
         {
             throw new NotImplementedException();
         }
-
 
         #region Work with  files
         public static void SaveToFile(PhoneNumber phoneNumber, PortStateForAts portState)

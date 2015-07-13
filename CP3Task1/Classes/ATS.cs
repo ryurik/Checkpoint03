@@ -24,7 +24,14 @@ namespace CP3Task1.Classes
     [Serializable]
     public class ATS
     {
-        private  EventHandler<System.EventArgs> callToTerminalEventHandler;
+        private EventHandler<System.EventArgs> callToTerminalEventHandler;
+        private Dictionary<TarificateEvent, CallDuration> tarificator = new Dictionary<TarificateEvent, CallDuration>();
+        private int callID = 0;
+
+        private int getNewId()
+        {
+            return ++callID;
+        }
 
         public  event EventHandler<System.EventArgs> CallToTerminalEvent
         {
@@ -189,7 +196,12 @@ namespace CP3Task1.Classes
                 var args = new CallingEventArgs() {ConnectionResult = ConnectionResult.Default, Tagget = phoneNumber};
                 if (Program.Listners.CallFromAtsToPortListner.ContainsKey(port))
                 {
-                    Program.Listners.CallFromAtsToPortListner[port](this, args);
+                    Program.Listners.CallFromAtsToPortListner[port](this, args); // Start call (from ATS)
+                    if (args.ConnectionResult == ConnectionResult.Ok)
+                    {
+                        TarificateEvent tarificateEvent = new TarificateEvent() {ID = getNewId(), Caller = null, Receiver = port};
+                        tarificator.Add(tarificateEvent, new CallDuration() { StartCall = DateTime.Now, EndCall = DateTime.Now });    
+                    }
                 }
                 else
                 {
