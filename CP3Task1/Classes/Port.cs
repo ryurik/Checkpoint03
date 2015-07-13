@@ -25,7 +25,7 @@ namespace CP3Task1
                 // try to subscribe
                 if (value == (PortStateForAts.Plugged | PortStateForAts.Free))
                 {
-                    Ats.addCallFromAtsToProtListener(this, OnIncomingCall);
+                    Ats.addCallFromAtsToPortListener(this, OnIncomingCall);
                 }
                 _portStateForAts = value;
             }
@@ -33,8 +33,6 @@ namespace CP3Task1
         public ATS Ats { get; set; }
 
         private EventHandler<EventArgs> _portEventHandler;
-        private EventHandler<CallingEventArgs> _incomingCallEventHandler;
-        private EventHandler<CallingEventArgs> _outgoingCallEventHandler;
 
         public event EventHandler<EventArgs> PortEvent
         {
@@ -55,53 +53,6 @@ namespace CP3Task1
             remove { _portEventHandler -= value; }
         }
 
-        public event EventHandler<CallingEventArgs> IncomingCall
-        {
-            add
-            {
-                if (_incomingCallEventHandler != null)
-                {
-                    if (!_incomingCallEventHandler.GetInvocationList().Contains(value))
-                    {
-                        _incomingCallEventHandler += value;
-                    }
-                }
-                else
-                {
-                    _incomingCallEventHandler += value;
-                }
-            }
-            remove { _incomingCallEventHandler -= value; }
-        }
-
-        public event EventHandler<CallingEventArgs> OutgoingCall
-        {
-            add
-            {
-                if (_outgoingCallEventHandler != null)
-                {
-                    if (!_outgoingCallEventHandler.GetInvocationList().Contains(value))
-                    {
-                        _outgoingCallEventHandler += value;
-                    }
-                }
-                else
-                {
-                    _outgoingCallEventHandler += value;
-                }
-            }
-            remove { _outgoingCallEventHandler -= value; }
-        }
-
-
-        protected virtual void OnPortEvent(Object sender, EventArgs args)
-        {
-            var temp = _portEventHandler;
-            if (temp != null)
-            {
-                temp(sender, args);
-            }
-        }
 
         // event "ConnectToPort" from Terminal 
         public void TerminalConnectingToPort(Object sender, PortEventArgs args)
@@ -138,12 +89,6 @@ namespace CP3Task1
         private void TransferCallToAts(object sender, EventArgs args)
         {
             throw new NotImplementedException();
-        }
-
-
-        public void GenerateEvent()
-        {
-            OnPortEvent(this, null);
         }
 
 

@@ -35,8 +35,29 @@ namespace CP3Task1
             {
                 ats.CallToTerminal(p.PhoneNumber); // try to call first pluged and free number
             }
+            p = ats.Ports.Where(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)).Skip(1).First();
+            ats.CallToTerminal(p.PhoneNumber); // try to call to second pluged and free number
 
-            Console.ReadKey();
+            const ConsoleKey exitKey = ConsoleKey.Escape; // Esc - exit from Console
+            ConsoleKeyInfo cki;
+            do
+            {
+                cki = Console.ReadKey(true);
+                switch (cki.Key)
+                {
+                    case ConsoleKey.D1:
+                        Console.WriteLine("Try to call:");
+                        break;
+                    case ConsoleKey.D2:
+                        Console.WriteLine("Try to call:");
+                        break;
+                    case ConsoleKey.D0:
+                        Console.WriteLine("Ports plugged:{0}", ats.Ports.Where(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)).Count());
+                        break;
+
+                } 
+
+            } while (cki.Key != exitKey);
         }
     }
 }

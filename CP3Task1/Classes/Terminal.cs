@@ -7,16 +7,22 @@ using Checkpoint03.Classes;
 using CP3Task1.Classes;
 using CP3Task1.Classes.EventArgs;
 using CP3Task1.Enums;
+using System.Threading;
 
 namespace CP3Task1
 {
     //public delegate Call
     public class Terminal
     {
+        private String[] _colorNames = ConsoleColor.GetNames(typeof(ConsoleColor));
+
         private int _number;
         private TerminalState _terminalState;
         private Port _port;
         private ATS _ats;
+        private DateTime _callStartTime;
+        private Timer _timer;
+
 
         public int Number
         {
@@ -29,13 +35,30 @@ namespace CP3Task1
             get { return _terminalState; }
             set
             {
-                _terminalState = value; 
-                ConnectToPort(value);
-                if (Ats != null)
+                switch (value)
                 {
-                    Ats.addCallFromPortToTerminalListener(this, OnIncomingCall);
+                    case TerminalState.On:
+                        ConnectToPort(value);
+                        if (Ats != null)
+                        {
+                            Ats.addCallFromPortToTerminalListener(this, OnIncomingCall);
+                        }
+                        break;
+                    case TerminalState.Off:
+                        DisconnectFromPort(value);
+                        if (Ats != null)
+                        {
+                            Ats.delCallFromPortToTerminalListener(this, OnIncomingCall);
+                        }
+                        break;
                 }
+                _terminalState = value; 
             }
+        }
+
+        private void DisconnectFromPort(CP3Task1.TerminalState value)
+        {
+            throw new NotImplementedException();
         }
 
         public Port Port
@@ -58,23 +81,10 @@ namespace CP3Task1
         }
 
 
-        private EventHandler<CallingEventArgs> _callInHandler;
-        private EventHandler<CallingEventArgs> _callOutHandler;
         private EventHandler<PortEventArgs> _connectingHandler;
 
         public event EventHandler<CallingEventArgs> AfterCalling;
 
-        public event EventHandler<CallingEventArgs> CallIn
-        {
-            add { _callInHandler += value; }
-            remove { _callInHandler -= value; }
-        }
-
-        public event EventHandler<CallingEventArgs> CallOut
-        {
-            add { _callOutHandler += value; }
-            remove { _callOutHandler -= value; }
-        }
 
         public event EventHandler<PortEventArgs> Connecting
         {
@@ -84,8 +94,9 @@ namespace CP3Task1
 
         public void OnIncomingCall(Object sender, EventArgs args)
         {
-            Console.WriteLine("I'am a terminal #{0} and I'm get Call from ATS", Number);
-            // If we We must to change the port state to 
+            Console.WriteLine("I'am a terminal #{0} and I'm get Call from ATS. Time:{1}", Number, DateTime.Now);
+            _callStartTime = DateTime.Now;
+             _timer = new Timer(TimerCallback, null, 0, 1000);
         }
 
         protected void OnAfterCalling(CallingEventArgs args)
@@ -144,6 +155,29 @@ namespace CP3Task1
             OnConnecting(this, args);
         }
 
+        private void TimerCallback(Object o)
+        {
+            var duration = (DateTime.Now - _callStartTime).TotalSeconds;
+
+            ConsoleColor originalCC = Console.ForegroundColor;
+
+            ConsoleColor color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), _colorNames[Number % _colorNames.Count()]);
+            Console.ForegroundColor = color;
+            Console.WriteLine("In TimerCallback:{0} in terminal {1}. Call duration(s):{2:0}", DateTime.Now, Number, duration);
+            Console.ForegroundColor = originalCC;
+
+            if (duration > 30)
+            {
+                HangUp();
+            }
+        }
+
+        private void HangUp()
+        {
+            throw new NotImplementedException();
+        }
+
+
         #region WorkWithFiles
         public static void SaveToFile(PhoneNumber phoneNumber)
         {
@@ -176,10 +210,5 @@ namespace CP3Task1
         }
         #endregion
 
-        public void ConnectFromPort(object sender, TerminalState args)
-        {
-            // if we have a reaction from terminal its mean what terminal is On
-            args = TerminalState.On;
-        }
     }
 }
