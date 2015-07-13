@@ -74,6 +74,20 @@ namespace CP3Task1.Classes
         private Dictionary<ATS, DelegateCallToTerminal> callFromPortToAtsListner = new Dictionary<ATS, DelegateCallToTerminal>();
 
 
+        #region FromAtsToPort
+        public void addCallFromAtsToPortListener(Port port, DelegateCallToTerminal listener)
+        {
+            if (listener == null) return;
+            if (callFromAtsToPortListner.ContainsKey(port)) callFromAtsToPortListner[port] += listener;
+            else callFromAtsToPortListner[port] = listener;
+        }
+
+        public void delCallFromAtsToPortListener(Port port, DelegateCallToTerminal listener)
+        {
+            if (listener == null) return;
+            if (callFromAtsToPortListner.ContainsKey(port)) callFromAtsToPortListner[port] -= listener;
+        }
+        #endregion
         #region FromPortToTerminal
         public void addCallFromPortToTerminalListener(Terminal terminal, DelegateCallToTerminal listener)
         {
@@ -88,20 +102,6 @@ namespace CP3Task1.Classes
             if (callFromPortToTerminalListner.ContainsKey(terminal)) callFromPortToTerminalListner[terminal] -= listener;
         }
         #endregion
-        #region FromAtsToPort
-        public void addCallFromAtsToPortListener(Port port, DelegateCallToTerminal listener)
-        {
-            if (listener == null) return;
-            if (callFromAtsToPortListner.ContainsKey(port)) callFromAtsToPortListner[port] += listener;
-            else callFromAtsToPortListner[port] = listener;
-        }
-
-        public void delCallFromAtsToPortListener(Port port, DelegateCallToTerminal listener)
-        {
-            if (listener == null) return;
-            if (callFromAtsToPortListner.ContainsKey(port)) callFromAtsToPortListner[port] += listener;
-        }
-        #endregion
         #region FromTerminalToPort
         public void addCallFromTerminalToPortListener(Port port, DelegateCallToTerminal listener)
         {
@@ -113,7 +113,7 @@ namespace CP3Task1.Classes
         public void delCallFromTerminalToPortListener(Port port, DelegateCallToTerminal listener)
         {
             if (listener == null) return;
-            if (callFromTerminalToPortListner.ContainsKey(port)) callFromAtsToPortListner[port] += listener;
+            if (callFromTerminalToPortListner.ContainsKey(port)) callFromAtsToPortListner[port] -= listener;
         }
         #endregion
         #region FromPortToAts
@@ -127,7 +127,7 @@ namespace CP3Task1.Classes
         public void delCallPortToAtsListener(ATS ats, DelegateCallToTerminal listener)
         {
             if (listener == null) return;
-            if (callFromPortToAtsListner.ContainsKey(ats)) callFromPortToAtsListner[ats] += listener;
+            if (callFromPortToAtsListner.ContainsKey(ats)) callFromPortToAtsListner[ats] -= listener;
         }
         #endregion
 
@@ -255,7 +255,6 @@ namespace CP3Task1.Classes
                 else
                 {
                     Console.WriteLine("Port with number {0} doesn't exist");
-                    return;
                 }
             }
         }
