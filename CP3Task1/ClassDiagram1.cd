@@ -1,85 +1,163 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram MajorVersion="1" MinorVersion="1">
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access" MembersFormat="NameAndType">
   <Class Name="CP3Task1.Classes.ATS" Collapsed="true">
     <Position X="5.25" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ACoAAgAAAAAQBAgABABEQAAEAACAAAAEAAgAAUACIAA=</HashCode>
+      <HashCode>ACoAAgAAAAAQBAgABABEQAAEAACAAAAEAAAAAUACIAA=</HashCode>
       <FileName>Classes\ATS.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CP3Task1.Port" Collapsed="true">
-    <Position X="8.75" Y="0.75" Width="1.5" />
+    <Position X="5.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAAAgAAAQAAAAAAAAQggAAACAABAAAAgACQAAGAA=</HashCode>
+      <HashCode>AAIAAAAgABAQAAAAAAAAQggAAACAABAAAAgACQAAGAA=</HashCode>
       <FileName>Classes\Port.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CP3Task1.Terminal" Collapsed="true">
-    <Position X="7" Y="1.75" Width="1.5" />
+    <Position X="8.75" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EEAAAAAgAAAhgAoiAkAAABAACCGAAAAACQAIARBBGAg=</HashCode>
+      <HashCode>EEAAAAAgABAhgAoiAkAAABAACCGAAAAACQAIARBBGAg=</HashCode>
       <FileName>Classes\Terminal.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CP3Task1.Classes.EventArgs.CallingEventArgs" Collapsed="true">
+  <Class Name="CP3Task1.Classes.EventArgs.CallingEventArgs" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="7" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAEAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <HashCode>AAACEAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAEAAAAA=</HashCode>
       <FileName>EventArgs\CallingEventArgs.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
+    <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="CP3Task1.PortSet" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="5.25" Y="1.75" Width="1.5" />
+    <Position X="10.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACIAAAAAAAAAABgQAAAABAQAAAAAAAAAAAAAAABQIAA=</HashCode>
       <FileName>Classes\PortSet.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="CP3Task1.TerminalSet">
-    <Position X="11.5" Y="2.75" Width="1.5" />
+  <Class Name="CP3Task1.TerminalSet" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACIAAAAAAAAAABAQAAAABAQAAAAAAAAAAAAAAEBQIAA=</HashCode>
       <FileName>Classes\TerminalSet.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
+    <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="CP3Task1.Classes.EventArgs.PortEventArgs">
-    <Position X="7" Y="2.5" Width="1.5" />
+  <Class Name="CP3Task1.Classes.EventArgs.PortEventArgs" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAQgAAAAAAAA=</HashCode>
       <FileName>EventArgs\PortEventArgs.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CP3Task1.Classes.PortEvent&lt;P, E&gt;" Collapsed="true">
+    <Position X="7" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Classes\ATS.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CP3Task1.Classes.Listners" Collapsed="true">
+    <Position X="10.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAFAGIAQAQCAAAAAAAAgCAIgBCgQIAAUhAAAAAAIA=</HashCode>
+      <FileName>Classes\Listners.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Checkpoint03.Classes.Serializer" Collapsed="true">
+    <Position X="5.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAGAAAAAAAAAAAAQAAAAQAAAAAAAAQAAAAAAACAUA=</HashCode>
+      <FileName>Classes\Serializer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CP3Task1.Classes.TarifficateEvent" Collapsed="true">
+    <Position X="7" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAgAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\TarifficateEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CP3Task1.Classes.EventArgs.HangUpEventArgs" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>EventArgs\HangUpEventArgs.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Struct Name="CP3Task1.PhoneNumber" Collapsed="true">
-    <Position X="5.25" Y="3" Width="1.5" />
+    <Position X="5.25" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAEAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Structures\PhoneNumber.cs</FileName>
     </TypeIdentifier>
   </Struct>
+  <Interface Name="CP3Task1.Interfaces.ICallingEventArgs" Collapsed="true">
+    <Position X="5.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Interfaces\ICallingEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CP3Task1.Interfaces.IHangUpArg" Collapsed="true">
+    <Position X="7" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IHangUpArg.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CP3Task1.Interfaces.IPortEventArgs" Collapsed="true">
+    <Position X="8.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAQgAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IPortEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
   <Enum Name="CP3Task1.TerminalState" Collapsed="true">
-    <Position X="7" Y="4.25" Width="1.5" />
+    <Position X="10.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
       <FileName>Enums\TerminalState.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="CP3Task1.ConnectionResult" Collapsed="true">
-    <Position X="5.25" Y="4.25" Width="1.5" />
+    <Position X="7" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AgAAAAAAgAAAAIAAAAAAIAAAAAAAAAAAAAABAACAAAA=</HashCode>
       <FileName>Enums\ConnectionResult.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="CP3Task1.Enums.ConnectionPortResult">
-    <Position X="9" Y="1.75" Width="1.5" />
+  <Enum Name="CP3Task1.Enums.ConnectionPortResult" Collapsed="true">
+    <Position X="5.25" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AgAAAAAAAAAAAAACAAAAIAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Enums\ConnectionPortResult.cs</FileName>
     </TypeIdentifier>
   </Enum>
+  <Enum Name="CP3Task1.PortStateForAts" Collapsed="true">
+    <Position X="8.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAABAAAAAAQAAAAIAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Enums\PortState.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Delegate Name="CP3Task1.Classes.DelegateCallToTerminal" Collapsed="true">
+    <Position X="5.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\Listners.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="CP3Task1.Classes.DelegateHangUp" Collapsed="true">
+    <Position X="7" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>Classes\Listners.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

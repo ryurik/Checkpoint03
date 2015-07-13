@@ -1,13 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using CP3Task1.Classes.EventArgs;
 
 namespace CP3Task1.Classes
 {
+    public delegate void DelegateCallToTerminal(Object Object, System.EventArgs args);
+    public delegate void DelegateHangUp(Object Object, HangUpEventArgs args);
+
     public class Listners
     {
+        #region CallListners
         private Dictionary<Port, DelegateCallToTerminal> callFromAtsToPortListner;
         private Dictionary<Terminal, DelegateCallToTerminal> callFromPortToTerminalListner;
         private Dictionary<Port, DelegateCallToTerminal> callFromTerminalToPortListner;
         private Dictionary<ATS, DelegateCallToTerminal> callFromPortToAtsListner;
+        #endregion
+
+        #region HangUpListners
+        private Dictionary<Port, DelegateHangUp> hangUpFromTerminalToPortListner;
+        private Dictionary<ATS, DelegateHangUp> hangUpFromPortToAtsListner;
+        #endregion
 
         public Dictionary<Port, DelegateCallToTerminal> CallFromAtsToPortListner { 
             get{return callFromAtsToPortListner;}
@@ -26,12 +38,27 @@ namespace CP3Task1.Classes
             set { callFromPortToAtsListner = value; }
         }
 
+        public Dictionary<Port, DelegateHangUp> HangUpFromTerminalToPortListner
+        {
+            get { return hangUpFromTerminalToPortListner; }
+            set { hangUpFromTerminalToPortListner = value; }
+        }
+        public Dictionary<ATS, DelegateHangUp> HangUpFromPortToAtsListner
+        {
+            get { return hangUpFromPortToAtsListner; }
+            set { hangUpFromPortToAtsListner = value; }
+        }
+
+
         public Listners()
         {
             CallFromAtsToPortListner = new Dictionary<Port, DelegateCallToTerminal>();
             CallFromPortToTerminalListner = new Dictionary<Terminal, DelegateCallToTerminal>();
             CallFromTerminalToPortListner = new Dictionary<Port, DelegateCallToTerminal>();
             CallFromPortToAtsListner = new Dictionary<ATS, DelegateCallToTerminal>();
+            
+            HangUpFromTerminalToPortListner = new Dictionary<Port, DelegateHangUp>();
+            HangUpFromPortToAtsListner = new Dictionary<ATS, DelegateHangUp>();
         }
 
         #region FromAtsToPort
@@ -73,7 +100,7 @@ namespace CP3Task1.Classes
         public void DelCallFromTerminalToPortListener(Port port, DelegateCallToTerminal listener)
         {
             if (listener == null) return;
-            if (callFromTerminalToPortListner.ContainsKey(port)) callFromAtsToPortListner[port] -= listener;
+            if (callFromTerminalToPortListner.ContainsKey(port)) callFromTerminalToPortListner[port] -= listener;
         }
         #endregion
         #region FromPortToAts
@@ -88,6 +115,35 @@ namespace CP3Task1.Classes
         {
             if (listener == null) return;
             if (callFromPortToAtsListner.ContainsKey(ats)) callFromPortToAtsListner[ats] -= listener;
+        }
+        #endregion
+
+        #region HangUpFromTerminalToPort
+        public void AddHangUpFromTerminalToPortListener(Port port, DelegateHangUp listener)
+        {
+            if (listener == null) return;
+            if (HangUpFromTerminalToPortListner.ContainsKey(port)) HangUpFromTerminalToPortListner[port] += listener;
+            else HangUpFromTerminalToPortListner[port] = listener;
+        }
+
+        public void DelHangUpFromTerminalToPortListener(Port port, DelegateHangUp listener)
+        {
+            if (listener == null) return;
+            if (HangUpFromTerminalToPortListner.ContainsKey(port)) HangUpFromTerminalToPortListner[port] -= listener;
+        }
+        #endregion
+        #region HangUpFromPortToAts
+        public void AddHangUpFromPortToAtsListener(ATS ats, DelegateHangUp listener)
+        {
+            if (listener == null) return;
+            if (HangUpFromPortToAtsListner.ContainsKey(ats)) HangUpFromPortToAtsListner[ats] += listener;
+            else HangUpFromPortToAtsListner[ats] = listener;
+        }
+
+        public void DelHangUpFromPortToAtsListener(ATS ats, DelegateHangUp listener)
+        {
+            if (listener == null) return;
+            if (HangUpFromPortToAtsListner.ContainsKey(ats)) HangUpFromPortToAtsListner[ats] -= listener;
         }
         #endregion
 

@@ -15,8 +15,11 @@ namespace CP3Task1
     //public delegate Call
     public class Terminal
     {
+        private static object userOpSync = new object();
+
         private String[] _colorNames = ConsoleColor.GetNames(typeof(ConsoleColor));
 
+        private int _callId;
         private int _number;
         private TerminalState _terminalState;
         private Port _port;
@@ -107,9 +110,11 @@ namespace CP3Task1
 
         public void OnIncomingCall(Object sender, EventArgs args)
         {
-            Trace.WriteLine(String.Format("I'am a terminal #{0} and I'm get Call from ATS. Time:{1}", Number, DateTime.Now));
+            Trace.WriteLine(String.Format("I'am a terminal #{0} and I'm get Call from ATS(Port). Time:{1}", Number, DateTime.Now));
             _callStartTime = DateTime.Now;
-             _timer = new Timer(TimerCallback, null, 0, 1000);
+            _timer = new Timer(TimerCallback, null, 0, 1000);
+            if (args is CallingEventArgs)
+                _callId = (args as CallingEventArgs).Id;
         }
 
         protected void OnAfterCalling(CallingEventArgs args)
@@ -175,20 +180,41 @@ namespace CP3Task1
             ConsoleColor originalCC = Console.ForegroundColor;
 
             ConsoleColor color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), _colorNames[Number % _colorNames.Count()]);
-            Console.ForegroundColor = color;
+            //Console.ForegroundColor = color;
             Trace.WriteLine(String.Format("In TimerCallback:{0} in terminal {1}. Call duration(s):{2:0}", DateTime.Now, Number, duration));
-            Console.ForegroundColor = originalCC;
+            //Console.ForegroundColor = originalCC;
 
-            if (duration > 30)
+            Random r = new Random();
+
+            if (duration > r.Next(0, 60)) // random Call duration 
             {
+                _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                _timer.Dispose(); // Disable timer
+                _timer = null;
                 HangUp();
             }
         }
 
         private void HangUp()
         {
-            
-            throw new NotImplementedException();
+            lock (userOpSync)
+            {
+                var tmp = _callId;
+                if ((Port != null) && (tmp != 0))
+                {
+                    var args = new HangUpEventArgs() { Id = tmp };
+                    if (Program.Listners.HangUpFromTerminalToPortListner.ContainsKey(Port))
+                    {
+                        Program.Listners.HangUpFromTerminalToPortListner[Port](this, args);
+                            // HangUp from Terminal->Port
+                        if (args.Id == 0)
+                        {
+                            Trace.WriteLine(String.Format("Call #{0} was end at:{1}", _callId, DateTime.Now));
+                        }
+                    }
+                }
+                _callId = 0;
+            }
         }
 
 

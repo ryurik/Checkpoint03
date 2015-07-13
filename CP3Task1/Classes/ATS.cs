@@ -7,8 +7,6 @@ using CP3Task1.Classes.EventArgs;
 
 namespace CP3Task1.Classes
 {
-    public delegate void DelegateCallToTerminal(Object Object, System.EventArgs args);
-
     class PortEvent<P, E>
     {
         public P _port;
@@ -24,9 +22,12 @@ namespace CP3Task1.Classes
     [Serializable]
     public class ATS
     {
+        private static object userOpSync = new object();
+
         private EventHandler<System.EventArgs> callToTerminalEventHandler;
-        private Dictionary<TarificateEvent, CallDuration> tarificator = new Dictionary<TarificateEvent, CallDuration>();
+        private Dictionary<TarifficateEvent, CallInfo> tarifficator = new Dictionary<TarifficateEvent, CallInfo>();
         private int callID = 0;
+        private List<TarifficateEvent> listTarifficateEvents = new List<TarifficateEvent>();
 
         private int getNewId()
         {
@@ -76,22 +77,6 @@ namespace CP3Task1.Classes
 
 //        private List<PortEvent<Port, DelegateCallToTerminal>> listCallToTerminals = new List<PortEvent<Port, DelegateCallToTerminal>>();
 
-
-        public void TransferCallFromPortToTerminal(Object sender, System.EventArgs args)
-        {
-            if ((sender != null) && (sender is Port))
-            {
-                var t = _terminals.FirstOrDefault(x=>x.Number == (sender as Port).PhoneNumber.Number);
-                if ((t != null) && (Program.Listners.CallFromPortToTerminalListner.ContainsKey(t)))
-                {
-                    Program.Listners.CallFromPortToTerminalListner[t](this, args);
-                }
-                else
-                {
-                    Console.WriteLine("Terminal with number {0} doesn't exist");
-                }
-            }
-        }
 
         private PortSet _ports = new PortSet();
         private TerminalSet _terminals = new TerminalSet();
@@ -193,14 +178,31 @@ namespace CP3Task1.Classes
             var port = _ports.FirstOrDefault(x => x.PhoneNumber.Number == phoneNumber.Number);
             if ((port != null) && (port.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)))
             {
-                var args = new CallingEventArgs() {ConnectionResult = ConnectionResult.Default, Tagget = phoneNumber};
+                var callEventStart = DateTime.Now;
+                var id = getNewId();
+                var args = new CallingEventArgs() {Id=id, CallStart = callEventStart, ConnectionResult = ConnectionResult.Default, Tagget = phoneNumber };
                 if (Program.Listners.CallFromAtsToPortListner.ContainsKey(port))
                 {
-                    Program.Listners.CallFromAtsToPortListner[port](this, args); // Start call (from ATS)
-                    if (args.ConnectionResult == ConnectionResult.Ok)
+                    lock (userOpSync)
                     {
-                        TarificateEvent tarificateEvent = new TarificateEvent() {ID = getNewId(), Caller = null, Receiver = port};
-                        tarificator.Add(tarificateEvent, new CallDuration() { StartCall = DateTime.Now, EndCall = DateTime.Now });    
+                        Console.WriteLine("Starting call #{0} at:{1}", id, callEventStart);
+                        Program.Listners.CallFromAtsToPortListner[port](this, args); // Start call (from ATS)
+                        TarifficateEvent tarifficateEvent = new TarifficateEvent() {ID = id};
+                        listTarifficateEvents.Add(tarifficateEvent);
+                        if (args.ConnectionResult == ConnectionResult.Ok)
+                        {
+                            tarifficator.Add(tarifficateEvent,
+                                new CallInfo()
+                                {
+                                    Caller = null,
+                                    Receiver = port,
+                                    StartCall = callEventStart,
+                                    EndCall = callEventStart
+                                });
+
+                            //we must to subscribe ATS to HangUp
+                            Program.Listners.AddHangUpFromPortToAtsListener(this, OnHangUpFromPort);
+                        }
                     }
                 }
                 else
@@ -209,6 +211,25 @@ namespace CP3Task1.Classes
                 }
             }
         }
+
+        public void OnHangUpFromPort(Object Object, HangUpEventArgs args)
+        {
+            // TransferHangUpToCallerPort(Object, args); // not in this life
+            // Okay - we get HangUp event from port. Now we must write all data to store
+            TarifficateEvent te = listTarifficateEvents.FirstOrDefault(x => x.ID == args.Id);
+            if ((te != null) && (tarifficator.ContainsKey(te)))
+            {
+                CallInfo ci = tarifficator[te];
+                ci.EndCall = DateTime.Now;
+                Console.WriteLine("Call #{0} was end at:{1}", args.Id, DateTime.Now);
+            }
+            else
+            {
+                Console.WriteLine("Cann't to find call #{0} !!!!!!!!!", args.Id);
+            }
+            args.Id = 0;
+        }
+
         
         private void LoadData()
         {

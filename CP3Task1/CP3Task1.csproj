@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Listners.cs" />
-    <Compile Include="Classes\TarificateEvent.cs" />
+    <Compile Include="Classes\TarifficateEvent.cs" />
     <Compile Include="EventArgs\CallingEventArgs.cs" />
     <Compile Include="Classes\ATS.cs" />
     <Compile Include="Classes\Serializer.cs" />
@@ -51,10 +51,12 @@
     <Compile Include="Enums\PortState.cs" />
     <Compile Include="Classes\Port.cs" />
     <Compile Include="Classes\PortSet.cs" />
+    <Compile Include="EventArgs\HangUpEventArgs.cs" />
     <Compile Include="EventArgs\PortEventArgs.cs" />
     <Compile Include="Interfaces\ICallingEventArgs.cs" />
+    <Compile Include="Interfaces\IHangUpArg.cs" />
     <Compile Include="Interfaces\IPortEventArgs.cs" />
-    <Compile Include="Structures\CallDuration.cs" />
+    <Compile Include="Structures\CallInfo.cs" />
     <Compile Include="Structures\PhoneNumber.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
