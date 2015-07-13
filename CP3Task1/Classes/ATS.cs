@@ -68,77 +68,16 @@ namespace CP3Task1.Classes
         }
 
 //        private List<PortEvent<Port, DelegateCallToTerminal>> listCallToTerminals = new List<PortEvent<Port, DelegateCallToTerminal>>();
-        private Dictionary<Port, DelegateCallToTerminal> callFromAtsToPortListner = new Dictionary<Port, DelegateCallToTerminal>();
-        private Dictionary<Terminal, DelegateCallToTerminal> callFromPortToTerminalListner = new Dictionary<Terminal, DelegateCallToTerminal>();
-        private Dictionary<Port, DelegateCallToTerminal> callFromTerminalToPortListner = new Dictionary<Port, DelegateCallToTerminal>();
-        private Dictionary<ATS, DelegateCallToTerminal> callFromPortToAtsListner = new Dictionary<ATS, DelegateCallToTerminal>();
 
-
-        #region FromAtsToPort
-        public void addCallFromAtsToPortListener(Port port, DelegateCallToTerminal listener)
-        {
-            if (listener == null) return;
-            if (callFromAtsToPortListner.ContainsKey(port)) callFromAtsToPortListner[port] += listener;
-            else callFromAtsToPortListner[port] = listener;
-        }
-
-        public void delCallFromAtsToPortListener(Port port, DelegateCallToTerminal listener)
-        {
-            if (listener == null) return;
-            if (callFromAtsToPortListner.ContainsKey(port)) callFromAtsToPortListner[port] -= listener;
-        }
-        #endregion
-        #region FromPortToTerminal
-        public void addCallFromPortToTerminalListener(Terminal terminal, DelegateCallToTerminal listener)
-        {
-            if (listener == null) return;
-            if (callFromPortToTerminalListner.ContainsKey(terminal)) callFromPortToTerminalListner[terminal] += listener;
-            else callFromPortToTerminalListner[terminal] = listener;
-        }
-
-        public void delCallFromPortToTerminalListener(Terminal terminal, DelegateCallToTerminal listener)
-        {
-            if (listener == null) return;
-            if (callFromPortToTerminalListner.ContainsKey(terminal)) callFromPortToTerminalListner[terminal] -= listener;
-        }
-        #endregion
-        #region FromTerminalToPort
-        public void addCallFromTerminalToPortListener(Port port, DelegateCallToTerminal listener)
-        {
-            if (listener == null) return;
-            if (callFromTerminalToPortListner.ContainsKey(port)) callFromTerminalToPortListner[port] += listener;
-            else callFromTerminalToPortListner[port] = listener;
-        }
-
-        public void delCallFromTerminalToPortListener(Port port, DelegateCallToTerminal listener)
-        {
-            if (listener == null) return;
-            if (callFromTerminalToPortListner.ContainsKey(port)) callFromAtsToPortListner[port] -= listener;
-        }
-        #endregion
-        #region FromPortToAts
-        public void addCallPortToAtsListener(ATS ats, DelegateCallToTerminal listener)
-        {
-            if (listener == null) return;
-            if (callFromPortToAtsListner.ContainsKey(ats)) callFromPortToAtsListner[ats] += listener;
-            else callFromPortToAtsListner[ats] = listener;
-        }
-
-        public void delCallPortToAtsListener(ATS ats, DelegateCallToTerminal listener)
-        {
-            if (listener == null) return;
-            if (callFromPortToAtsListner.ContainsKey(ats)) callFromPortToAtsListner[ats] -= listener;
-        }
-        #endregion
 
         public void TransferCallFromPortToTerminal(Object sender, System.EventArgs args)
         {
             if ((sender != null) && (sender is Port))
             {
                 var t = _terminals.FirstOrDefault(x=>x.Number == (sender as Port).PhoneNumber.Number);
-                if ((t != null) && (callFromPortToTerminalListner.ContainsKey(t)))
+                if ((t != null) && (Program.Listners.CallFromPortToTerminalListner.ContainsKey(t)))
                 {
-                    callFromPortToTerminalListner[t](this, args);
+                    Program.Listners.CallFromPortToTerminalListner[t](this, args);
                 }
                 else
                 {
@@ -248,9 +187,9 @@ namespace CP3Task1.Classes
             if ((port != null) && (port.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)))
             {
                 var args = new CallingEventArgs() {ConnectionResult = ConnectionResult.Default, Tagget = phoneNumber};
-                if (callFromAtsToPortListner.ContainsKey(port))
+                if (Program.Listners.CallFromAtsToPortListner.ContainsKey(port))
                 {
-                    callFromAtsToPortListner[port](this, args);
+                    Program.Listners.CallFromAtsToPortListner[port](this, args);
                 }
                 else
                 {

@@ -14,6 +14,8 @@ namespace CP3Task1
         public static string[] PortData = { "Port", "port" };     // directory, extension
         public static string[] TerminalData = { "Terminal", "terminal" }; // directory, extension
 
+        public static Listners Listners = new Listners();
+
         static void Main(string[] args)
         {
             AppPath = Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);

@@ -25,7 +25,7 @@ namespace CP3Task1
                 // try to subscribe
                 if (value == (PortStateForAts.Plugged | PortStateForAts.Free))
                 {
-                    Ats.addCallFromAtsToPortListener(this, OnIncomingCall);
+                    Program.Listners.AddCallFromAtsToPortListener(this, OnIncomingCall);
                 }
                 _portStateForAts = value;
             }

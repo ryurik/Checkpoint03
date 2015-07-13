@@ -41,14 +41,14 @@ namespace CP3Task1
                         ConnectToPort(value);
                         if (Ats != null)
                         {
-                            Ats.addCallFromPortToTerminalListener(this, OnIncomingCall);
+                            Program.Listners.AddCallFromPortToTerminalListener(this, OnIncomingCall);
                         }
                         break;
                     case TerminalState.Off:
                         DisconnectFromPort(value);
                         if (Ats != null)
                         {
-                            Ats.delCallFromPortToTerminalListener(this, OnIncomingCall);
+                            Program.Listners.DelCallFromPortToTerminalListener(this, OnIncomingCall);
                         }
                         break;
                 }
