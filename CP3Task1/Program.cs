@@ -48,12 +48,9 @@ namespace CP3Task1
                         {
                             ats.CallToTerminal(p.PhoneNumber); // try to call first pluged and free number
                         }
-                        //p = ats.Ports.Where(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)).Skip(1).First();
-                        //ats.CallToTerminal(p.PhoneNumber); // try to call to second pluged and free number
-
                         break;
-                    case ConsoleKey.D2:
-                        Console.WriteLine("Try to call:");
+                    case ConsoleKey.D9:
+                        ats.ShowStatistic();
                         break;
                     case ConsoleKey.D0:
                         Console.WriteLine("Ports plugged:{0}", ats.Ports.Where(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)).Count());
@@ -77,7 +74,10 @@ namespace CP3Task1
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Press 0 to check plugged ports");
             Console.ForegroundColor = ConsoleColor.White;
-            
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Press 9 to show statistic");
+            Console.ForegroundColor = ConsoleColor.White;
         }
     
     }

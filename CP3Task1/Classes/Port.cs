@@ -28,6 +28,12 @@ namespace CP3Task1
                 if (value == (PortStateForAts.Plugged | PortStateForAts.Free))
                 {
                     Program.Listners.AddCallFromAtsToPortListener(this, OnIncomingCall);
+                    Program.Listners.DelHangUpFromTerminalToPortListener(this, OnHangUpFromTerminal);
+                }
+                else if (value == (PortStateForAts.Plugged | PortStateForAts.Busy ))
+                {
+                    Program.Listners.DelCallFromAtsToPortListener(this, OnIncomingCall);
+                    Program.Listners.AddHangUpFromTerminalToPortListener(this, OnHangUpFromTerminal);
                 }
                 _portStateForAts = value;
             }
@@ -94,8 +100,8 @@ namespace CP3Task1
             {
                 (args as CallingEventArgs).ConnectionResult = ConnectionResult.Ok;
             }
-            // we must subscribe the port to HangUpEvent from terminal
-            Program.Listners.AddHangUpFromTerminalToPortListener(this, OnHangUpFromTerminal);
+            //// we must subscribe the port to HangUpEvent from terminal
+            //Program.Listners.AddHangUpFromTerminalToPortListener(this, OnHangUpFromTerminal);
         }
 
         public void TransferCallFromPortToTerminal(Object sender, System.EventArgs args)

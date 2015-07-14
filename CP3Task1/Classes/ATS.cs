@@ -53,23 +53,6 @@ namespace CP3Task1.Classes
             remove { callToTerminalEventHandler -= value; }
         }
 
-
-
-        void OnIncomingCall(Object sender, System.EventArgs args)
-        {
-            // BINGO!!!!
-            var temp = callToTerminalEventHandler;
-            if (temp != null)
-            {
-                temp(sender, args);
-            }
-            else
-            {
-                Console.WriteLine("A'm lonely s=" + (args as CallingEventArgs).Tagget.Number.ToString());
-            }
-
-        }
-
         public static DelegateCallToTerminal TestEvent(object Object, System.EventArgs args)
         {
             return null;
@@ -96,6 +79,9 @@ namespace CP3Task1.Classes
         public ATS()
         {
             LoadData(); // LoadMainData - Starting ATS
+            //we must to subscribe ATS to HangUp
+            Program.Listners.AddHangUpFromPortToAtsListener(this, OnHangUpFromPort);
+
         }
 
         #region WorkWithPorts
@@ -199,9 +185,6 @@ namespace CP3Task1.Classes
                                     StartCall = callEventStart,
                                     EndCall = callEventStart
                                 });
-
-                            //we must to subscribe ATS to HangUp
-                            Program.Listners.AddHangUpFromPortToAtsListener(this, OnHangUpFromPort);
                         }
                     }
                 }
@@ -221,6 +204,7 @@ namespace CP3Task1.Classes
             {
                 CallInfo ci = tarifficator[te];
                 ci.EndCall = DateTime.Now;
+                tarifficator[te] = ci;
                 Console.WriteLine("Call #{0} was end at:{1}", args.Id, DateTime.Now);
             }
             else
@@ -250,6 +234,24 @@ namespace CP3Task1.Classes
             {
                 terminal.Ats = this;
                 _terminals.Add(terminal);
+            }
+        }
+
+        internal void ShowStatistic()
+        {
+            foreach (var t in tarifficator)
+            {
+                DateTime dt;
+                double d;
+                if (DateTime.TryParse(t.Value.EndCall.ToString(), out dt))
+                {
+                    d = (dt - t.Value.StartCall).TotalSeconds;
+                }
+                else
+                {
+                    d = 0;
+                }
+                Console.WriteLine("#{0}"+"\t"+"Destination:{1}"+"\t"+"StartTime{2}"+"\t"+"EndTime{3}"+"\"+Duration in sec:{4:0}", t.Key.ID, t.Value.Receiver.PhoneNumber.Number, t.Value.StartCall, t.Value.EndCall, d);                
             }
         }
     }
