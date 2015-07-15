@@ -22,15 +22,14 @@ namespace CP3Task1
             AppPath = Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
             ats = new ATS();
 
-            Console.WriteLine("Loaded {0} port{1}", ats.Ports.Count, (ats.Ports.Count > 1) ? "s": "");
-            Console.WriteLine("Of these are {0} : {1} ", PortStateForAts.UnPlugged.ToString(), ats.Ports.Where(x=>x.PortStateForAts == PortStateForAts.UnPlugged).Count());
-            //ats.CreateFirstPorts(100);
-            //ats.CreateFirstTerminals(100);
+            ats.CreateFirstPorts(100);
+            ats.CreateFirstTerminals(100);
+            ats.LoadData();
 
-            ats.ActivatePortsFromContracts();
-            ats.ConnectTerminals();
+            //ats.ActivatePortsFromContracts();
+            //ats.ActivateTerminalsFromContracts();
 
-            ShowInfo();
+            ats.Help();
 
             const ConsoleKey exitKey = ConsoleKey.Escape; // Esc - exit from Console
             ConsoleKeyInfo cki;
@@ -39,47 +38,26 @@ namespace CP3Task1
                 cki = Console.ReadKey(true);
                 switch (cki.Key)
                 {
+                    case ConsoleKey.F1:
+                        ats.Help();
+                        break;
                     case ConsoleKey.D1:
-                        Console.WriteLine("Try to call first free terminal:");
-
-                        var p = ats.Ports.FirstOrDefault(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free));
-
-                        if (p != null)
-                        {
-                            ats.CallToTerminal(p.PhoneNumber); // try to call first pluged and free number
-                        }
+                        ats.CallToRandomTerminal();
+                        break;
+                    case ConsoleKey.D8:
+                        ats.LoadData();
                         break;
                     case ConsoleKey.D9:
                         ats.ShowStatistic();
                         break;
                     case ConsoleKey.D0:
-                        Console.WriteLine("Ports plugged:{0}", ats.Ports.Where(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)).Count());
+                        ats.ShowAtsStates();
                         break;
 
                 } 
 
             } while (cki.Key != exitKey);
         }
-
-        public static void ShowInfo()
-        {
-            Console.WriteLine("After activation {0} : {1} ", PortStateForAts.Plugged, ats.Ports.Where(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)).Count());
-            Console.WriteLine("");
-
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("Press 1 to call to first free terminal.");
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("(results see in Output window in debug mode)");
-
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Press 0 to check plugged ports");
-            Console.ForegroundColor = ConsoleColor.White;
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Press 9 to show statistic");
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-    
     }
 
 }

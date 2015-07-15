@@ -56,6 +56,7 @@
     <Compile Include="Interfaces\ICallingEventArgs.cs" />
     <Compile Include="Interfaces\IHangUpArg.cs" />
     <Compile Include="Interfaces\IPortEventArgs.cs" />
+    <Compile Include="Structures\CallID.cs" />
     <Compile Include="Structures\CallInfo.cs" />
     <Compile Include="Structures\PhoneNumber.cs" />
     <Compile Include="Program.cs" />

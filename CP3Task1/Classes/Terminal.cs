@@ -56,6 +56,7 @@ namespace CP3Task1
                         {
                             Program.Listners.DelCallFromPortToTerminalListener(this, OnIncomingCall);
                         }
+                        Program.Listners.ClearCallFromPortToTerminal(this);
                         break;
                 }
                 _terminalState = value; 
@@ -177,11 +178,12 @@ namespace CP3Task1
         {
             var duration = (DateTime.Now - _callStartTime).TotalSeconds;
 
-            ConsoleColor originalCC = Console.ForegroundColor;
-
-            ConsoleColor color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), _colorNames[Number % _colorNames.Count()]);
+            //ConsoleColor originalCC = Console.ForegroundColor;
+            //ConsoleColor color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), _colorNames[Number % _colorNames.Count()]);
             //Console.ForegroundColor = color;
+
             Trace.WriteLine(String.Format("In TimerCallback:{0} in terminal {1}. Call duration(s):{2:0}", DateTime.Now, Number, duration));
+
             //Console.ForegroundColor = originalCC;
 
             Random r = new Random();

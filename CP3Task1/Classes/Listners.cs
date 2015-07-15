@@ -65,56 +65,84 @@ namespace CP3Task1.Classes
         public void AddCallFromAtsToPortListener(Port port, DelegateCallToTerminal listener)
         {
             if (listener == null) return;
-            if (callFromAtsToPortListner.ContainsKey(port)) callFromAtsToPortListner[port] += listener;
-            else callFromAtsToPortListner[port] = listener;
+            if (callFromAtsToPortListner.ContainsKey(port))
+            {
+                callFromAtsToPortListner[port] += listener;
+            }
+            else
+                callFromAtsToPortListner[port] = listener;
         }
 
         public void DelCallFromAtsToPortListener(Port port, DelegateCallToTerminal listener)
         {
             if (listener == null) return;
-            if (callFromAtsToPortListner.ContainsKey(port)) callFromAtsToPortListner[port] -= listener;
+            if (callFromAtsToPortListner.ContainsKey(port))
+                callFromAtsToPortListner[port] -= listener;
         }
         #endregion
         #region FromPortToTerminal
         public void AddCallFromPortToTerminalListener(Terminal terminal, DelegateCallToTerminal listener)
         {
             if (listener == null) return;
-            if (callFromPortToTerminalListner.ContainsKey(terminal)) callFromPortToTerminalListner[terminal] += listener;
-            else callFromPortToTerminalListner[terminal] = listener;
+            if (callFromPortToTerminalListner.ContainsKey(terminal))
+            {
+                callFromPortToTerminalListner[terminal] += listener;
+            }
+            else
+                callFromPortToTerminalListner[terminal] = listener;
         }
 
         public void DelCallFromPortToTerminalListener(Terminal terminal, DelegateCallToTerminal listener)
         {
             if (listener == null) return;
-            if (callFromPortToTerminalListner.ContainsKey(terminal)) callFromPortToTerminalListner[terminal] -= listener;
+            if (callFromPortToTerminalListner.ContainsKey(terminal)) 
+                callFromPortToTerminalListner[terminal] -= listener;
+        }
+
+        public void ClearCallFromPortToTerminal(Terminal terminal)
+        {
+            if (callFromPortToTerminalListner.ContainsKey(terminal))
+            {
+                callFromPortToTerminalListner.Remove(terminal);
+            }
         }
         #endregion
         #region FromTerminalToPort
         public void AddCallFromTerminalToPortListener(Port port, DelegateCallToTerminal listener)
         {
             if (listener == null) return;
-            if (callFromTerminalToPortListner.ContainsKey(port)) callFromTerminalToPortListner[port] += listener;
-            else callFromTerminalToPortListner[port] = listener;
+            if (callFromTerminalToPortListner.ContainsKey(port))
+            {
+                callFromTerminalToPortListner[port] += listener;
+            }
+            else
+                callFromTerminalToPortListner[port] = listener;
         }
 
         public void DelCallFromTerminalToPortListener(Port port, DelegateCallToTerminal listener)
         {
             if (listener == null) return;
-            if (callFromTerminalToPortListner.ContainsKey(port)) callFromTerminalToPortListner[port] -= listener;
+            if (callFromTerminalToPortListner.ContainsKey(port)) 
+                callFromTerminalToPortListner[port] -= listener;
         }
         #endregion
         #region FromPortToAts
-        public void AddCallPortToAtsListener(ATS ats, DelegateCallToTerminal listener)
+        public void AddCallFromPortToAtsListener(ATS ats, DelegateCallToTerminal listener)
         {
             if (listener == null) return;
-            if (callFromPortToAtsListner.ContainsKey(ats)) callFromPortToAtsListner[ats] += listener;
-            else callFromPortToAtsListner[ats] = listener;
+            if (callFromPortToAtsListner.ContainsKey(ats))
+            {
+                callFromPortToAtsListner[ats] += listener;
+            }
+            else
+                callFromPortToAtsListner[ats] = listener;
         }
 
-        public void DelCallPortToAtsListener(ATS ats, DelegateCallToTerminal listener)
+        public void DelCallFromPortToAtsListener(ATS ats, DelegateCallToTerminal listener)
         {
             if (listener == null) return;
-            if (callFromPortToAtsListner.ContainsKey(ats)) callFromPortToAtsListner[ats] -= listener;
+            if (callFromPortToAtsListner.ContainsKey(ats))
+                callFromPortToAtsListner[ats] -= listener;
         }
         #endregion
 
@@ -122,30 +150,51 @@ namespace CP3Task1.Classes
         public void AddHangUpFromTerminalToPortListener(Port port, DelegateHangUp listener)
         {
             if (listener == null) return;
-            if (HangUpFromTerminalToPortListner.ContainsKey(port)) HangUpFromTerminalToPortListner[port] += listener;
-            else HangUpFromTerminalToPortListner[port] = listener;
+            if (HangUpFromTerminalToPortListner.ContainsKey(port))
+            {
+                HangUpFromTerminalToPortListner[port] += listener;
+            }
+            else
+                HangUpFromTerminalToPortListner[port] = listener;
         }
 
         public void DelHangUpFromTerminalToPortListener(Port port, DelegateHangUp listener)
         {
             if (listener == null) return;
-            if (HangUpFromTerminalToPortListner.ContainsKey(port)) HangUpFromTerminalToPortListner[port] -= listener;
+            if (HangUpFromTerminalToPortListner.ContainsKey(port)) 
+                HangUpFromTerminalToPortListner[port] -= listener;
         }
         #endregion
         #region HangUpFromPortToAts
         public void AddHangUpFromPortToAtsListener(ATS ats, DelegateHangUp listener)
         {
             if (listener == null) return;
-            if (HangUpFromPortToAtsListner.ContainsKey(ats)) HangUpFromPortToAtsListner[ats] += listener;
-            else HangUpFromPortToAtsListner[ats] = listener;
+            if (HangUpFromPortToAtsListner.ContainsKey(ats))
+            {
+                HangUpFromPortToAtsListner[ats] += listener;
+            }
+            else
+                HangUpFromPortToAtsListner[ats] = listener;
         }
 
         public void DelHangUpFromPortToAtsListener(ATS ats, DelegateHangUp listener)
         {
             if (listener == null) return;
-            if (HangUpFromPortToAtsListner.ContainsKey(ats)) HangUpFromPortToAtsListner[ats] -= listener;
+            if (HangUpFromPortToAtsListner.ContainsKey(ats)) 
+                HangUpFromPortToAtsListner[ats] -= listener;
         }
         #endregion
 
+
+        public void ClearAllListners()
+        {
+            callFromAtsToPortListner.Clear();
+            callFromPortToTerminalListner.Clear();
+            callFromTerminalToPortListner.Clear();
+            callFromPortToAtsListner.Clear();
+
+            hangUpFromTerminalToPortListner.Clear();
+            //hangUpFromPortToAtsListner.Clear();
+        }
     }
 }
