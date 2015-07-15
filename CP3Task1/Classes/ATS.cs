@@ -78,7 +78,7 @@ namespace CP3Task1.Classes
 
         public ATS()
         {
-            LoadData(); // LoadMainData - Starting ATS
+            //LoadData(); // LoadMainData - Starting ATS
             //we must to subscribe ATS to HangUp
             Program.Listners.AddHangUpFromPortToAtsListener(this, OnHangUpFromPort);
 
@@ -89,10 +89,20 @@ namespace CP3Task1.Classes
         public void ActivatePortsFromContracts()
         {
             Random r = new Random();
-            for (int i = 0; i < Ports.Count / 2; i ++)
+            foreach (var p in Ports)
             {
-                var tmp = _ports.Where(x => x.PortStateForAts == PortStateForAts.UnPlugged).ToArray();
-                tmp[r.Next(1, tmp.Length)].PortStateForAts = PortStateForAts.Plugged | PortStateForAts.Free;
+                p.PortStateForAts = PortStateForAts.UnPlugged;
+            }
+
+            for (int i = 0; i < r.Next(1, Ports.Count); i ++)
+            {
+                if (_ports.Where(x => x.PortStateForAts == PortStateForAts.UnPlugged).Any())
+                {
+                    var tmp = _ports.Where(x => x.PortStateForAts == PortStateForAts.UnPlugged).ToArray();
+                    var p = tmp[r.Next(0, tmp.Length - 1)];
+                    p.PortStateForAts = PortStateForAts.Plugged;
+                    p.PortStateForAts = PortStateForAts.Plugged | PortStateForAts.Free;
+                }
             }
         }
 
@@ -120,10 +130,21 @@ namespace CP3Task1.Classes
         public void ActivateTerminalsFromContracts()
         {
             Random r = new Random();
-            for (int i = 0; i < Ports.Count / 2; i++)
+            foreach (var t in Terminals)
             {
-                var tmp = _ports.Where(x => x.PortStateForAts == PortStateForAts.UnPlugged).ToArray();
-                tmp[r.Next(1, tmp.Length)].PortStateForAts = PortStateForAts.Plugged;
+                t.SwitchOff();
+            }
+            var pluggedPorts = _ports.Where(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)).ToArray();
+            foreach (var tmp in pluggedPorts)
+            {
+                var t = Terminals.FirstOrDefault(x => x.Number == tmp.PhoneNumber.Number);
+                if (t != null)
+                {
+                    if (r.Next(1, 10) < 6)
+                        t.SwitchOn();
+                    else
+                        t.SwitchOff();
+                } 
             }
         }
 
@@ -142,21 +163,6 @@ namespace CP3Task1.Classes
             }
         }
 
-        public void ConnectTerminals()
-        {
-            foreach (var t in Terminals)
-            {
-                t.Port = _ports.FirstOrDefault(x => x.PhoneNumber.Number == t.Number);
-
-                if ((t.Port != null) && (t.Port.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)))
-                {
-                    t.SwitchOn();
-                    Console.WriteLine("Terminal #{0} are plugged", t.Number);
-                    //t.ConnectToPort(this, null);
-                }
-            }
-        }
-
         #endregion
 
         public void CallToTerminal(PhoneNumber phoneNumber)
@@ -171,8 +177,17 @@ namespace CP3Task1.Classes
                 {
                     lock (userOpSync)
                     {
-                        Console.WriteLine("Starting call #{0} at:{1}", id, callEventStart);
-                        Program.Listners.CallFromAtsToPortListner[port](this, args); // Start call (from ATS)
+                        Console.WriteLine("#{0} Starting call to Terminal:{1} at:{2}", id, phoneNumber.Number, callEventStart);
+                        var tmp = Program.Listners.CallFromAtsToPortListner[port];
+                        if (tmp != null)
+                        {
+                            tmp(this, args); // Start call (from ATS)
+                        }
+                        else
+                        {
+                            Console.WriteLine("Port #{0} don't listen ATS", phoneNumber.Number);
+                            return;
+                        }
                         TarifficateEvent tarifficateEvent = new TarifficateEvent() {ID = id};
                         listTarifficateEvents.Add(tarifficateEvent);
                         if (args.ConnectionResult == ConnectionResult.Ok)
@@ -215,7 +230,7 @@ namespace CP3Task1.Classes
         }
 
         
-        private void LoadData()
+        public void LoadData()
         {
             var dir = new DirectoryInfo(Path.GetDirectoryName(Port.GenerateFileName(0)));
             if (!Directory.Exists(dir.FullName))
@@ -223,8 +238,11 @@ namespace CP3Task1.Classes
             // loading ports
             foreach (Port port in dir.GetFiles(searchPattern: String.Format("*.{0}", Program.PortData[1])).Select(f => Port.LoadFromFile(Int32.Parse(Path.GetFileNameWithoutExtension(f.Name)))))
             {
-                port.Ats = this;
-                _ports.Add(port); 
+                if (!_ports.Where(x => x.PhoneNumber.Number == port.PhoneNumber.Number).Any())
+                {
+                    port.Ats = this;
+                    _ports.Add(port);
+                }
             }
             dir = new DirectoryInfo(Path.GetDirectoryName(Terminal.GenerateFileName(0)));
             if (!Directory.Exists(dir.FullName))
@@ -232,9 +250,16 @@ namespace CP3Task1.Classes
             // loading terminals
             foreach (Terminal terminal in dir.GetFiles(searchPattern: String.Format("*.{0}", Program.TerminalData[1])).Select(f => Terminal.LoadFromFile(Int32.Parse(Path.GetFileNameWithoutExtension(f.Name)))))
             {
-                terminal.Ats = this;
-                _terminals.Add(terminal);
+                if (!_terminals.Where(x => x.Number == terminal.Number).Any())
+                {
+                    terminal.Ats = this;
+                    terminal.Port = Ports.FirstOrDefault(x => x.PhoneNumber.Number == terminal.Number);
+                    _terminals.Add(terminal);
+                }
             }
+            Program.Listners.ClearAllListners();
+            ActivatePortsFromContracts();
+            ActivateTerminalsFromContracts();
         }
 
         internal void ShowStatistic()
@@ -251,8 +276,68 @@ namespace CP3Task1.Classes
                 {
                     d = 0;
                 }
-                Console.WriteLine("#{0}"+"\t"+"Destination:{1}"+"\t"+"StartTime{2}"+"\t"+"EndTime{3}"+"\"+Duration in sec:{4:0}", t.Key.ID, t.Value.Receiver.PhoneNumber.Number, t.Value.StartCall, t.Value.EndCall, d);                
+                Console.WriteLine("#{0}"+"\t"+"Destination:{1}"+"\t"+"StartTime:{2}"+"\t"+"EndTime:{3}"+"\t"+"Duration in sec:{4:0}", t.Key.ID, t.Value.Receiver.PhoneNumber.Number, t.Value.StartCall, t.Value.EndCall, d);                
             }
+        }
+
+        internal void ShowAtsStates()
+        {
+            Console.WriteLine("Ports plugged:{0}" + "\n" + "Terminals on:{1}",
+                Ports.Where(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)).Count(),
+                Terminals.Where(x => x.TerminalState == TerminalState.On).Count());
+        }
+
+        internal void CallToRandomTerminal()
+        {
+            Random r = new Random();        
+            var t = Terminals.Where(x => (x.TerminalState == TerminalState.On) && (x.Port.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)));
+
+            if (t.Any())
+            {
+                CallToTerminal(new PhoneNumber(){Number = t.ToArray()[r.Next(0, t.Count())].Number}); // try to call first pluged and free number
+            }
+            else
+            {
+                Console.WriteLine("No free terminals");
+            }
+
+        }
+
+        internal void Help()
+        {
+
+            var originalColor = Console.ForegroundColor;
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("Press ");
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.Write("F1");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(" to show help." + "\n");
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("Press 1 to call to random free terminal.");
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("(results see in Output window in debug mode)");
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Press 0 to check plugged ports and terminals");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Press 9 to show statistic");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.WriteLine("Press 8 to reload ATS");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = originalColor;
+        }
+
+        internal void ShowActualStatistic()
+        {
+            Console.WriteLine("After activation {0} : {1} ", PortStateForAts.Plugged, Ports.Where(x => x.PortStateForAts == (PortStateForAts.Plugged | PortStateForAts.Free)).Count());
+            Console.WriteLine("");
         }
     }
 }
